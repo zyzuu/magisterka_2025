@@ -14,13 +14,13 @@ class base_sequence extends uvm_sequence;
             base_transaction m_base_transaction = base_transaction::type_id::create("m_base_transaction");
             
             // Create and randomize the sequence item for master
-            m_base_transaction.randomize() with {mode == base_transaction::MASTER_MODE}
             start_item(m_base_transaction);
+            m_base_transaction.randomize() with {mode == base_transaction::MASTER_MODE}
             finish_item(m_base_transaction);
 
             // Create and randomize the sequence item for slave
-            m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE}
             start_item(m_base_transaction);
+            m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE}
             finish_item(m_base_transaction);
         end
     endtask: body
