@@ -12,15 +12,15 @@ class base_sequence extends uvm_sequence;
     virtual task body();
         for (int i=0; i<number_of_transactions; ++i) begin
             base_transaction m_base_transaction = base_transaction::type_id::create("m_base_transaction");
-            
+
             // Create and randomize the sequence item for master
             start_item(m_base_transaction);
-            m_base_transaction.randomize() with {mode == base_transaction::MASTER_MODE}
+            m_base_transaction.randomize() with {mode == base_transaction::MASTER_MODE;};
             finish_item(m_base_transaction);
 
             // Create and randomize the sequence item for slave
             start_item(m_base_transaction);
-            m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE}
+            m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE;};
             finish_item(m_base_transaction);
         end
     endtask: body

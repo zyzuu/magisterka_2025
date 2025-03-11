@@ -32,6 +32,6 @@ interface base_if #(int DATA_WIDTH = 32, int ADDR_WIDTH = 32, int SEL_WIDTH = 4)
         output sel,
         output we,
         output cyc,
-        output stb,
+        output stb
     );
 endinterface

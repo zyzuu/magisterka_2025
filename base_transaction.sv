@@ -1,8 +1,6 @@
 //  Class: base_transaction
 //
 class base_transaction extends uvm_sequence_item;
-    `uvm_object_utils(base_transaction);
-    
     // Parameters
     parameter int DW = 32; // Data width
     parameter int AW = 32; // Address width
@@ -35,18 +33,17 @@ class base_transaction extends uvm_sequence_item;
     `uvm_field_int(data_out, UVM_ALL_ON)
     `uvm_field_int(addr, UVM_ALL_ON)
     `uvm_field_int(sel, UVM_ALL_ON)
-    `uvm_field_bit(we, UVM_ALL_ON)
-    `uvm_field_bit(cyc, UVM_ALL_ON)
-    `uvm_field_bit(stb, UVM_ALL_ON)
-    `uvm_field_bit(ack, UVM_ALL_ON)
-    `uvm_field_bit(err, UVM_ALL_ON)
-    `uvm_field_bit(rty, UVM_ALL_ON)
+    `uvm_field_int(we, UVM_ALL_ON)
+    `uvm_field_int(cyc, UVM_ALL_ON)
+    `uvm_field_int(stb, UVM_ALL_ON)
+    `uvm_field_int(ack, UVM_ALL_ON)
+    `uvm_field_int(err, UVM_ALL_ON)
+    `uvm_field_int(rty, UVM_ALL_ON)
   `uvm_object_utils_end
 
     // TODO: ADD PROPER CONSTRAINTS
-    
+
     function new(string name = "base_transaction");
         super.new(name);
     endfunction: new
 endclass: base_transaction
-

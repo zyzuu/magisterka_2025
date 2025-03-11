@@ -1,9 +1,9 @@
 class master_monitor extends uvm_monitor;
     `uvm_component_utils(master_monitor)
-    
+
     // Virtual interface
-    virtual base_if.master_if m_vif;
-    
+    virtual base_if m_vif;
+
     // Analysis port
     uvm_analysis_port#(base_transaction) ap;
 
@@ -11,14 +11,14 @@ class master_monitor extends uvm_monitor;
     super.new(name, parent);
     ap = new("ap", this);
     endfunction: new
-    
+
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        if (!uvm_config_db#(virtual base_if.master_if)::get(this, "", "base_if.master_if", m_vif))
+        if (!uvm_config_db#(virtual base_if)::get(this, "", "base_if", m_vif))
         `uvm_fatal(get_type_name(), "Could not get m_vif from factory")
     endfunction: build_phase
 
-    task void run_phase(uvm_phase phase);
+    task run_phase(uvm_phase phase);
         base_transaction m_base_transaction;
         forever begin
             @(posedge m_vif.clk);
