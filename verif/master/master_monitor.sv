@@ -12,16 +12,20 @@ class master_monitor extends uvm_monitor;
   ap = new("ap", this);
   endfunction: new
 
+  function void set_vif(string if_name);
+    $display("M_MONITOR set_vif() | if_name: %s", if_name);
+    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
+    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
+  endfunction: set_vif
+
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual base_if)::get(this, "", "base_if", m_vif))
-    `uvm_fatal(get_type_name(), "Could not get m_vif from factory")
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction;
     forever begin
-      @(posedge m_vif.clk);
+      @(posedge m_vif.clk_i);
       m_base_transaction.data_in <= m_vif.we ? m_vif.data_in : 0;
       m_base_transaction.addr <= m_vif.addr;
       m_base_transaction.sel <= m_vif.sel;
