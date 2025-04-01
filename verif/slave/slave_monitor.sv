@@ -12,16 +12,21 @@ class slave_monitor extends uvm_monitor;
   ap = new("ap", this);
   endfunction: new
 
+  function void set_vif(string if_name);
+    $display("S_MONITOR set_vif() | if_name: %s", if_name);
+    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, s_vif))
+    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
+  endfunction: set_vif
+
+
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual base_if)::get(this, "", "base_if", s_vif))
-    `uvm_fatal(get_type_name(), "Could not get s_vif from factory")
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction;
     forever begin
-      @(posedge s_vif.clk);
+      @(posedge s_vif.clk_i);
       m_base_transaction.data_in <= s_vif.we ? s_vif.data_in : 0;
       m_base_transaction.addr <= s_vif.addr;
       m_base_transaction.sel <= s_vif.sel;

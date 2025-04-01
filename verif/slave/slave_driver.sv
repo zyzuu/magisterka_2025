@@ -9,18 +9,21 @@ class slave_driver extends uvm_driver#(base_transaction);
 
   // Virtual interface
   virtual base_if s_vif;
-  integer if_number;
+  string if_name;
 
-  function new(string name = "slave_driver", uvm_component parent=null,  integer if_number);
+  function new(string name = "slave_driver", uvm_component parent=null);
     super.new(name, parent);
-    this.if_number = if_number;
   endfunction: new
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual base_if)::get(this, "", $sformatf("s_vif_%d", if_number), s_vif))
-    `uvm_fatal(get_type_name(), "Could not get s_vif from factory")
   endfunction: build_phase
+
+  function void set_vif(string if_name);
+    $display("S_DRIVER set_vif() | if_name: %s", if_name);
+    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, s_vif))
+    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
+  endfunction: set_vif
 
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction;
