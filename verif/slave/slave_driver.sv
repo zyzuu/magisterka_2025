@@ -51,8 +51,10 @@ class slave_driver extends uvm_driver#(base_transaction);
           s_vif.data_out <= memory[s_vif.addr];
         end
         if(s_vif.cyc == 1 && s_vif.stb == 1 && s_vif.we == 1) begin
-          s_vif.ack <= 1;
           memory[s_vif.addr] <= s_vif.data_in;
+          s_vif.ack <= 1;
+          s_vif.err <= 0;
+          s_vif.rty <= 0;
         end
       end
 

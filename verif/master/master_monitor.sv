@@ -23,21 +23,22 @@ class master_monitor extends uvm_monitor;
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction;
+    base_transaction m_base_transaction = new();
     forever begin
       @(posedge m_vif.clk_i);
-      m_base_transaction.data_in <= m_vif.we ? m_vif.data_in : 0;
+      m_base_transaction.data_out <= m_vif.we ? m_vif.data_out : 0;
       m_base_transaction.addr <= m_vif.addr;
       m_base_transaction.sel <= m_vif.sel;
       m_base_transaction.we <= m_vif.we;
       m_base_transaction.operation <= m_vif.we;
       m_base_transaction.cyc <= m_vif.cyc;
       m_base_transaction.stb <= m_vif.stb;
-      m_base_transaction.data_out <= !m_vif.we ? m_vif.data_out : 0;
+      m_base_transaction.data_in <= !m_vif.we ? m_vif.data_in : 0;
       m_base_transaction.ack <= m_vif.ack;
       m_base_transaction.err <= m_vif.err;
       m_base_transaction.rty <= m_vif.rty;
-      ap.write(m_base_transaction);
+      //ap.write(m_base_transaction);
+      $display("M_MONITOR run_phase() | item: %p", m_base_transaction);
     end
   endtask: run_phase
 

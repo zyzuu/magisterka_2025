@@ -1,1 +1,2 @@
+log -r /*;
 run -all;

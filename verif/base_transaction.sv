@@ -14,8 +14,8 @@ class base_transaction extends uvm_sequence_item;
   rand operation_t operation;
 
   // Unified fields for both Master and Slave interfaces
-  rand bit [DW-1:0] data_in;  // Input data (Master: m0_data_i, Slave: s0_data_i)
-  bit [DW-1:0]    data_out;  // Output data (Master: m0_data_o, Slave: s0_data_o)
+  rand bit [DW-1:0] data_in;  // Input data (Master: m0_data_i, Slave: s0_data_o)
+  rand bit [DW-1:0]    data_out;  // Output data (Master: m0_data_o, Slave: s0_data_i)
   rand bit [AW-1:0] addr;  // Address (Master: m0_addr_i, Slave: s0_addr_o)
   rand bit [SW-1:0] sel;   // Select lines (Master: m0_sel_i, Slave: s0_sel_o)
   rand bit      we;    // Write enable (Master: m0_we_i, Slave: s0_we_o)
@@ -42,6 +42,19 @@ class base_transaction extends uvm_sequence_item;
   `uvm_object_utils_end
 
   // TODO: ADD PROPER CONSTRAINTS
+  constraint c__we {
+    cyc == 1;
+    stb == 1;
+  }
+  constraint c__sel {
+    solve sel before addr;
+  }
+  constraint c__data_in {
+    data_out == 32'hDEADBEEF;
+  }
+  constraint c__addr {
+    addr == {sel,28'h0000_0000};
+  }
 
   function new(string name = "base_transaction");
     super.new(name);

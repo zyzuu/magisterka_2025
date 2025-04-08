@@ -8,12 +8,12 @@ module top;
   bit reset;
 
   // Clock generation
-  always #5 clk = ~clk;
+  always #50 clk = ~clk;
 
   // Reset Generation
   initial begin
-    reset = 1;
-    #5 reset = 0;
+    reset = 0;
+    #5 reset = 1;
   end
 
   base_if m_vif_00(clk, ~reset);

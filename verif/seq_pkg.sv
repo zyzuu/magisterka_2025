@@ -8,4 +8,5 @@ package seq_pkg;
 
   `include "base_transaction.sv"
   `include "base_sequence.sv"
+  `include "base_vseq.sv"
 endpackage : seq_pkg

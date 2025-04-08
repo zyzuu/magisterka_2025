@@ -1,9 +1,9 @@
 //  Class: base_sequence
 //
-class base_sequence extends uvm_sequence;
+class base_sequence extends uvm_sequence #(base_transaction);;
   `uvm_object_utils(base_sequence);
 
-  rand int number_of_transactions;
+  int number_of_transactions = 100;
 
   function new(string name = "base_sequence");
     super.new(name);
@@ -16,14 +16,15 @@ class base_sequence extends uvm_sequence;
       // Create and randomize the sequence item for master
       start_item(m_base_transaction);
       m_base_transaction.randomize() with {mode == base_transaction::MASTER_MODE;};
-      $display("m_base_transaction_item: %p", m_base_transaction);
+      //$display("BASE_SEQUENCE | m_base_transaction_item: %p", m_base_transaction);
       finish_item(m_base_transaction);
+      //$display("BASE_SEQUENCE | after finish_item! | m_base_transaction_item: %p", m_base_transaction);
 
       // Create and randomize the sequence item for slave
-      start_item(m_base_transaction);
-      m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE;};
-      $display("m_base_transaction_item: %p", m_base_transaction);
-      finish_item(m_base_transaction);
+      //start_item(m_base_transaction);
+      //m_base_transaction.randomize() with {mode == base_transaction::SLAVE_MODE;};
+      //$display("m_base_transaction_item: %p", m_base_transaction);
+      //finish_item(m_base_transaction);
     end
   endtask: body
 

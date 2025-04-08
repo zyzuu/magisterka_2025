@@ -6,6 +6,7 @@ class slave_monitor extends uvm_monitor;
 
   // Analysis port
   uvm_analysis_port#(base_transaction) ap;
+  logic [31:0] memory [1023:0];
 
   function new(string name = "slave_monitor", uvm_component parent=null);
   super.new(name, parent);
@@ -24,7 +25,7 @@ class slave_monitor extends uvm_monitor;
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction;
+    base_transaction m_base_transaction = new();
     forever begin
       @(posedge s_vif.clk_i);
       m_base_transaction.data_in <= s_vif.we ? s_vif.data_in : 0;
@@ -38,7 +39,25 @@ class slave_monitor extends uvm_monitor;
       m_base_transaction.ack <= s_vif.ack;
       m_base_transaction.err <= s_vif.err;
       m_base_transaction.rty <= s_vif.rty;
-      ap.write(m_base_transaction);
+      if(s_vif.cyc == 1 && s_vif.stb == 1 && s_vif.we == 1) begin
+          memory[s_vif.addr] <= s_vif.data_in;
+          s_vif.ack <= 1;
+          s_vif.err <= 0;
+          s_vif.rty <= 0;
+          $display("S_MONITOR WRITE OPERATION | item: %p", m_base_transaction);
+          @(posedge s_vif.clk_i);
+          s_vif.ack <= 0;
+      end
+      if(s_vif.cyc == 1 && s_vif.stb == 1 && s_vif.we == 0) begin // SINGLE READ CYCLE
+          s_vif.ack <= 1;
+          s_vif.data_out <= memory[s_vif.addr];
+          $display("S_MONITOR READ OPERATION | item: %p", m_base_transaction);
+          @(posedge s_vif.clk_i);
+          s_vif.ack <= 0;
+
+      end
+      //ap.write(m_base_transaction);
+      $display("S_MONITOR run_phase() | item: %p", m_base_transaction);
     end
   endtask: run_phase
 

@@ -19,6 +19,7 @@ class master_agent extends uvm_agent;
   endfunction: parse_if_number
 
   function void build_phase(uvm_phase phase);
+  $display("M_AGENT | build_phase | is_active: %d", get_is_active());
     if (get_is_active()) begin
       m_driver_h = master_driver::type_id::create("m_driver_h", this, $sformatf("s_vif_%d", if_number));
       m_driver_h.set_vif($sformatf("m_vif_%s",if_number));
