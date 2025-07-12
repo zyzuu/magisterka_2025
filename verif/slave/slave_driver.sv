@@ -60,8 +60,6 @@ class slave_driver extends uvm_driver#(base_transaction);
 
       else begin // Reset actions
         `uvm_info(get_type_name(), "Entered reset state!", UVM_DEBUG)
-        wait (s_vif.clk_i)
-
         s_vif.data_in <= 0;
         s_vif.addr <= 0;
         s_vif.sel <= 0;

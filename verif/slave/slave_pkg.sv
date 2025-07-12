@@ -5,6 +5,8 @@ package slave_pkg;
   import seq_pkg::*;
   // Includes
   //`include "base_transaction.sv"
+
+  `include "slave_sequencer.sv"
   `include "slave_driver.sv"
   `include "slave_monitor.sv"
   `include "slave_agent.sv"

@@ -28,32 +28,32 @@ class slave_monitor extends uvm_monitor;
     base_transaction m_base_transaction = new();
     forever begin
       @(posedge s_vif.clk_i);
-      m_base_transaction.data_in <= s_vif.we ? s_vif.data_in : 0;
-      m_base_transaction.addr <= s_vif.addr;
-      m_base_transaction.sel <= s_vif.sel;
-      m_base_transaction.we <= s_vif.we;
-      m_base_transaction.operation <= s_vif.we;
-      m_base_transaction.cyc <= s_vif.cyc;
-      m_base_transaction.stb <= s_vif.stb;
-      m_base_transaction.data_out <= !s_vif.we ? s_vif.data_out : 0;
-      m_base_transaction.ack <= s_vif.ack;
-      m_base_transaction.err <= s_vif.err;
-      m_base_transaction.rty <= s_vif.rty;
+      m_base_transaction.data_in = s_vif.we ? s_vif.data_in : 0;
+      m_base_transaction.addr = s_vif.addr;
+      m_base_transaction.sel = s_vif.sel;
+      m_base_transaction.we = s_vif.we;
+      m_base_transaction.operation = base_transaction::operation_t'(s_vif.we);
+      m_base_transaction.cyc = s_vif.cyc;
+      m_base_transaction.stb = s_vif.stb;
+      m_base_transaction.data_out = !s_vif.we ? s_vif.data_out : 0;
+      m_base_transaction.ack = s_vif.ack;
+      m_base_transaction.err = s_vif.err;
+      m_base_transaction.rty = s_vif.rty;
       if(s_vif.cyc == 1 && s_vif.stb == 1 && s_vif.we == 1) begin
-          memory[s_vif.addr] <= s_vif.data_in;
-          s_vif.ack <= 1;
-          s_vif.err <= 0;
-          s_vif.rty <= 0;
+          memory[s_vif.addr] = s_vif.data_in;
+          s_vif.ack = 1;
+          s_vif.err = 0;
+          s_vif.rty = 0;
           $display("S_MONITOR WRITE OPERATION | item: %p", m_base_transaction);
           @(posedge s_vif.clk_i);
-          s_vif.ack <= 0;
+          s_vif.ack = 0;
       end
       if(s_vif.cyc == 1 && s_vif.stb == 1 && s_vif.we == 0) begin // SINGLE READ CYCLE
-          s_vif.ack <= 1;
-          s_vif.data_out <= memory[s_vif.addr];
+          s_vif.ack = 1;
+          s_vif.data_out = memory[s_vif.addr];
           $display("S_MONITOR READ OPERATION | item: %p", m_base_transaction);
           @(posedge s_vif.clk_i);
-          s_vif.ack <= 0;
+          s_vif.ack = 0;
 
       end
       //ap.write(m_base_transaction);
