@@ -6,6 +6,7 @@ package master_pkg;
   // Includes
   //`include "base_transaction.sv"
 //
+  `include "master_sequencer.sv"
   `include "master_monitor.sv"
   `include "master_driver.sv"
   `include "master_agent.sv"

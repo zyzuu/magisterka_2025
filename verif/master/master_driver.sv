@@ -70,7 +70,7 @@ class master_driver extends uvm_driver#(base_transaction);
           $display("M_DRIVER before wait for ack read!");
           wait (m_vif.ack == 1);
           $display("M_DRIVER after wait for ack read!");
-          m_base_transaction.data_in <= m_vif.data_in;
+          m_base_transaction.data_in = m_vif.data_in;
           m_vif.stb = ~m_vif.stb;
           m_vif.cyc = ~m_vif.cyc;
         end
