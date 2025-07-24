@@ -6,7 +6,9 @@ package seq_pkg;
   import uvm_pkg::*;
   `include "uvm_macros.svh"
 
+  typedef enum {READ, WRITE} operation_t;
+  typedef enum {MASTER_MODE, SLAVE_MODE} mode_t;
+
   `include "base_transaction.sv"
   `include "base_sequence.sv"
-  `include "base_vseq.sv"
 endpackage : seq_pkg

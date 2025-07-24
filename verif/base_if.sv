@@ -10,7 +10,8 @@ interface base_if #(int DATA_WIDTH = 32, int ADDR_WIDTH = 32, int SEL_WIDTH = 4)
   logic err; // Error Signal
   logic rty; // Retry Signal
 
-  modport master_if (
+  //modport master_if (
+  modport slave_if (
     input data_in,
     input addr,
     input sel,
@@ -22,7 +23,8 @@ interface base_if #(int DATA_WIDTH = 32, int ADDR_WIDTH = 32, int SEL_WIDTH = 4)
     output err,
     output rty
   );
-  modport slave_if (
+  //modport slave_if (
+  modport master_if (
     input data_in,
     input ack,
     input err,
