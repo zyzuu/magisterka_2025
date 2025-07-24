@@ -1,4 +1,5 @@
 VERIF_DIR := verif
+DESIGN_DIR_ := wb_conmax/rtl/verilog/
 DESIGN_DIR := wb_conmax/rtl/verilog/*.v
 QUESTA_HOME = /eda/siemens/questasim_2023.4/questasim
 VERIF_SRCS_MASTER_HOME = $(VERIF_DIR)/master
@@ -11,12 +12,38 @@ VERIF_SRCS += $(VERIF_DIR)/slave/slave_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/env_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/top.sv
 #VERIF_SRCS += $(VERIF_DIR)/base_env.sv
+
+ALDEC_ENV := . /eda/aldec/Riviera-PRO-2024.10/etc/setenv
+SIEMENS_ENV := . /eda/siemens/scripts/setup-fpga-tools.sh
+CADENCE_ENV := . /eda/cadence/scripts/cadence-digital_2023.sh
+XILINX_ENV := . /eda/utils/set-xilinx-env.sh
+SYNOPSYS_ENV := . /eda/synopsys/scripts/add-synopsys-FEV-23-all
+
 ifneq ($(GUI),1)
 GUI_P = -c
 endif
 
-comp:
-	vlog $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2
+#GUI_X = --gui --tclbatch xsim.tcl
+#GUI_X = -R
+
+comp_questa:
+	$(SIEMENS_ENV)  && \
+	vlog $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2 -timescale=1ns/1ns
+
+#-uvmver 1.2
+comp_aldec:
+	$(ALDEC_ENV) && \
+	vlib work && \
+	set worklib && \
+	vlog $(DESIGN_DIR)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(VERIF_SRCS) -sv2k17 -timescale 1ns/1ns -uvmver 1.2
+
+comp_vcs:
+	$(SYNOPSYS_ENV) && \
+	vcs -kdb -debug_access+all -timescale=1ns/1ns -sverilog +v2k -ntb_opts uvm-1.2 +incdir+$(DESIGN_DIR_)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
+
+run_vcs:
+	$(SYNOPSYS_ENV) && \
+	./simv
 
 comp_master_files:
 	vlog -incr +incdir+$(VERIF_DIR) $(VERIF_SRCS_MASTER_HOME)/master_pkg.sv -L $(QUESTA_HOME)/uvm-1.2
@@ -27,10 +54,49 @@ comp_slave_files:
 comp_env_files:
 	vlog -work work $(DESIGN_DIR)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2
 
+comp_cadence:
+	$(CADENCE_ENV) && \
+	xrun $(VERIF_SRCS) -uvm -uvmpackage 1.2 $(DESIGN_DIR) -incdir $(DESIGN_DIR_) -incdir $(VERIF_DIR) -incdir $(VERIF_SRCS_SLAVE_HOME) -incdir $(VERIF_SRCS_MASTER_HOME) -timescale 1ns/1ns -R -gui
+
+run_cadence:
+#	export CDS_XCELIUM=/eda/cadence/2023-24/RHELx86/XCELIUM_23.03.007 && \
+	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/cdsgcc/gcc/bin" && \
+	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/simvision/bin" && \
+	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/xcelium/bin" &&
+	$(CADENCE_ENV) && \
+	xrun $(DESIGN_DIR) -incdir $(DESIGN_DIR_) -gui
+#xmvlog $(DESIGN_DIR) -incdir $(DESIGN_DIR_) && \
+#xrun
+
+comp_xilinx:
+	$(XILINX_ENV) && \
+	xvlog $(VERIF_SRCS) $(DESIGN_DIR) -i $(DESIGN_DIR_) -i $(VERIF_DIR) -i $(VERIF_SRCS_SLAVE_HOME) -i $(VERIF_SRCS_MASTER_HOME) -sv -L uvm /eda/xilinx/Vivado/2024.2/data/xsim/system_verilog/uvm_include/uvm_macros.svh --log xvlog_$(SEED).log --uvm_version 1.2
+#xsc -shared -v --lib uvm
+#xvlog -sv -f adder_4_bit_compile_list.f -L uvm -define NO_OF_TRANSACTIONS=2000;
+#xelab adder_4_bit_tb_top -relax -s top -timescale 1ns/1ps;
+
+elab_xilinx:
+	$(XILINX_ENV) && \
+	xelab top -timescale 1ns/1ns -L uvm -debug off -O3 -log xelab_$(SEED).log --uvm_version 1.2
+#-sv_lib dpi
+
+run_xilinx:
+	$(XILINX_ENV) && \
+	xsim top -testplusarg UVM_TESTNAME=base_test -R -sv_seed $(SEED) --log xsim_$(SEED).log
+#xsim top -R -testplusarg UVM_TESTNAME=adder_4_bit_basic_test
 run:
-	vopt +acc top -o top_opt -L $(QUESTA_HOME)/uvm-1.2
-	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 +UVM_VERBOSITY=UVM_DEBUG -do "sim.do"
+	$(SIEMENS_ENV)  && \
+	vopt +acc top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 && \
+	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 +UVM_VERBOSITY=UVM_DEBUG +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE -do "sim.do"
 #vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
 # -c -> command line interface
 # +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE
+
+
+run_aldec:
+	$(ALDEC_ENV) && \
+	vsim -c -dbg -lib work +access+r -l sim_aldec.log -do sim_aldec.do
+# wave -rec * shows waveforms inside aldec riviera pro
+
+
 all: comp_env_files run
