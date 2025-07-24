@@ -28,7 +28,17 @@ endif
 
 comp_questa:
 	$(SIEMENS_ENV)  && \
-	vlog $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2 -timescale=1ns/1ns
+	vlog $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2 -timescale=1ns/1ns -sv
+
+elab_questa:
+	$(SIEMENS_ENV) && \
+	vopt -O5 top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 -noincr -nodebug
+run_questa:
+	$(SIEMENS_ENV)  && \
+	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -do "run -all;" -logfile sim_$(SEED).log -uvmcontrol=none -sv_seed $(SEED) -stats=perf
+#vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
+# -c -> command line interface
+# +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE
 
 #-uvmver 1.2
 comp_aldec:
@@ -84,13 +94,6 @@ run_xilinx:
 	$(XILINX_ENV) && \
 	xsim top -testplusarg UVM_TESTNAME=base_test -R -sv_seed $(SEED) --log xsim_$(SEED).log
 #xsim top -R -testplusarg UVM_TESTNAME=adder_4_bit_basic_test
-run:
-	$(SIEMENS_ENV)  && \
-	vopt +acc top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 && \
-	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 +UVM_VERBOSITY=UVM_DEBUG +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE -do "sim.do"
-#vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
-# -c -> command line interface
-# +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE
 
 
 run_aldec:
