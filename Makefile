@@ -43,9 +43,13 @@ run_questa:
 #-uvmver 1.2
 comp_aldec:
 	$(ALDEC_ENV) && \
-	vlib work && \
-	set worklib && \
-	vlog $(DESIGN_DIR)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(VERIF_SRCS) -sv2k17 -timescale 1ns/1ns -uvmver 1.2
+	vlog $(DESIGN_DIR)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(VERIF_SRCS) -sv2k17 -timescale 1ns/1ns -uvmver 1.2 -O3 -nodebug
+
+run_aldec:
+	$(ALDEC_ENV) && \
+	vsim -c -do sim_aldec.do -O5 -sv_seed $(SEED) -l aldec_$(SEED).log
+# wave -rec * shows waveforms inside aldec riviera pro
+# -lib work
 
 comp_vcs:
 	$(SYNOPSYS_ENV) && \
@@ -96,10 +100,7 @@ run_xilinx:
 #xsim top -R -testplusarg UVM_TESTNAME=adder_4_bit_basic_test
 
 
-run_aldec:
-	$(ALDEC_ENV) && \
-	vsim -c -dbg -lib work +access+r -l sim_aldec.log -do sim_aldec.do
-# wave -rec * shows waveforms inside aldec riviera pro
+
 
 
 all: comp_env_files run

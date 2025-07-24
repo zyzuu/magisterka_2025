@@ -25,3 +25,8 @@ abilities
 -stats=perf
 -sv_seed
 -uvmcontrol=none
+
+# Aldec riviera
+## vlog
+-O3
+-nodebug
