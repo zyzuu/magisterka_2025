@@ -31,7 +31,6 @@ class base_env extends uvm_env;
 
   function new(string name="base_env", uvm_component parent=null);
     super.new(name, parent);
-    uvm_top.print_topology();
   endfunction: new
 
   function void build_phase(uvm_phase phase);
@@ -61,5 +60,4 @@ class base_env extends uvm_env;
     s_agent_14 = slave_agent::type_id::create("s_agent_14", this);
     s_agent_15 = slave_agent::type_id::create("s_agent_15", this);
   endfunction: build_phase
-
 endclass

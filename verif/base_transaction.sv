@@ -4,13 +4,10 @@ class base_transaction extends uvm_sequence_item;
   // Parameters
   parameter int DW = 32; // Data width
   parameter int AW = 32; // Address width
-  parameter int SW = DW/8;  // Select width
+  parameter int SW = 4;  // Select width
 
   // Mode of operation
-  typedef enum {MASTER_MODE, SLAVE_MODE} mode_t;
   rand mode_t mode;
-
-  typedef enum {READ, WRITE} operation_t;
   rand operation_t operation;
 
   // Unified fields for both Master and Slave interfaces
@@ -41,19 +38,14 @@ class base_transaction extends uvm_sequence_item;
     `uvm_field_int(rty, UVM_ALL_ON)
   `uvm_object_utils_end
 
-  // TODO: ADD PROPER CONSTRAINTS
   constraint c__we {
     cyc == 1;
     stb == 1;
   }
-  constraint c__sel {
-    solve sel before addr;
-  }
-  constraint c__data_in {
-    data_out == 32'hDEADBEEF;
-  }
   constraint c__addr {
-    addr == {sel,28'h0000_0000};
+    addr[31:28] >= 0;
+    addr[31:28] < 4'hF;
+    sel == addr[31:28];
   }
 
   function new(string name = "base_transaction");
