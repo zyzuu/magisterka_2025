@@ -30,3 +30,23 @@ abilities
 ## vlog
 -O3
 -nodebug
+## vsim
+-O5
+
+# Cadence xcelium
+## xrun -compile
+-sv
+-hlmdebug off
+-plusperf
+-newperf
+## xrun -elaborate
+-hlmdebug off
+-plusperf
+-newperf
+-sv
+## xrun -R
+-sv
+-hlmdebug off
+-plusperf
+-newperf
+-perfstats

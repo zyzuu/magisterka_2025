@@ -70,17 +70,15 @@ comp_env_files:
 
 comp_cadence:
 	$(CADENCE_ENV) && \
-	xrun $(VERIF_SRCS) -uvm -uvmpackage 1.2 $(DESIGN_DIR) -incdir $(DESIGN_DIR_) -incdir $(VERIF_DIR) -incdir $(VERIF_SRCS_SLAVE_HOME) -incdir $(VERIF_SRCS_MASTER_HOME) -timescale 1ns/1ns -R -gui
+	xrun -compile $(VERIF_SRCS)  $(DESIGN_DIR) -incdir $(DESIGN_DIR_) -incdir $(VERIF_DIR) -incdir $(VERIF_SRCS_SLAVE_HOME) -incdir $(VERIF_SRCS_MASTER_HOME) -timescale 1ns/1ns -sv -uvmhome CDNS-1.2 -uvm -uvmnocdnsextra -hlmdebug off -plusperf -newperf
+
+elab_cadence:
+	$(CADENCE_ENV) && \
+	xrun -elaborate -noupdate -top worklib.top -timescale 1ns/1ns -hlmdebug off -plusperf -newperf -uvmhome CDNS-1.2 -uvm -uvmnocdnsextra -sv
 
 run_cadence:
-#	export CDS_XCELIUM=/eda/cadence/2023-24/RHELx86/XCELIUM_23.03.007 && \
-	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/cdsgcc/gcc/bin" && \
-	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/simvision/bin" && \
-	export PATH="${PATH}:${CDS_XCELIUM}/bin:${CDS_XCELIUM}/tools/bin:${CDS_XCELIUM}/tools/xcelium/bin" &&
 	$(CADENCE_ENV) && \
-	xrun $(DESIGN_DIR) -incdir $(DESIGN_DIR_) -gui
-#xmvlog $(DESIGN_DIR) -incdir $(DESIGN_DIR_) && \
-#xrun
+	xrun -R -timescale 1ns/1ns -uvmhome CDNS-1.2 -uvm -uvmnocdnsextra -sv -hlmdebug off -plusperf -newperf -perfstat
 
 comp_xilinx:
 	$(XILINX_ENV) && \
