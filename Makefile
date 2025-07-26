@@ -2,6 +2,7 @@ VERIF_DIR := verif
 DESIGN_DIR_ := wb_conmax/rtl/verilog/
 DESIGN_DIR := wb_conmax/rtl/verilog/*.v
 QUESTA_HOME = /eda/siemens/questasim_2023.4/questasim
+VCS_HOME = /eda/synopsys/2023-24/RHELx86/VCS_2023.12/etc/
 VERIF_SRCS_MASTER_HOME = $(VERIF_DIR)/master
 VERIF_SRCS_SLAVE_HOME = $(VERIF_DIR)/slave
 VERIF_SRCS :=
@@ -12,6 +13,7 @@ VERIF_SRCS += $(VERIF_DIR)/slave/slave_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/env_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/top.sv
 #VERIF_SRCS += $(VERIF_DIR)/base_env.sv
+SEED := 1
 
 ALDEC_ENV := . /eda/aldec/Riviera-PRO-2024.10/etc/setenv
 SIEMENS_ENV := . /eda/siemens/scripts/setup-fpga-tools.sh
@@ -33,6 +35,7 @@ comp_questa:
 elab_questa:
 	$(SIEMENS_ENV) && \
 	vopt -O5 top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 -noincr -nodebug
+
 run_questa:
 	$(SIEMENS_ENV)  && \
 	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -do "run -all;" -logfile sim_$(SEED).log -uvmcontrol=none -sv_seed $(SEED) -stats=perf
@@ -53,11 +56,15 @@ run_aldec:
 
 comp_vcs:
 	$(SYNOPSYS_ENV) && \
-	vcs -kdb -debug_access+all -timescale=1ns/1ns -sverilog +v2k -ntb_opts uvm-1.2 +incdir+$(DESIGN_DIR_)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
+	vcs -sverilog -ntb_opts uvm-1.2  -timescale=1ns/1ns -Xkeyopt=rtopt -Xkeyopt=mvu +rad +incdir+$(VCS_HOME)/uvm-1.2 +incdir+$(DESIGN_DIR_) +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
+
+#comp_vcs:
+#	$(SYNOPSYS_ENV) && \
+#	vcs -kdb -debug_access+all -timescale=1ns/1ns -sverilog +v2k -ntb_opts uvm-1.2 +incdir+$(DESIGN_DIR_)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
 
 run_vcs:
 	$(SYNOPSYS_ENV) && \
-	./simv
+	./simv +ntb_random_seed $(SEED) -l vcs_$(SEED).log -reportstats
 
 comp_master_files:
 	vlog -incr +incdir+$(VERIF_DIR) $(VERIF_SRCS_MASTER_HOME)/master_pkg.sv -L $(QUESTA_HOME)/uvm-1.2
@@ -78,7 +85,7 @@ elab_cadence:
 
 run_cadence:
 	$(CADENCE_ENV) && \
-	xrun -R -timescale 1ns/1ns -uvmhome CDNS-1.2 -uvm -uvmnocdnsextra -sv -hlmdebug off -plusperf -newperf -perfstat
+	xrun -R -timescale 1ns/1ns -uvmhome CDNS-1.2 -uvm -uvmnocdnsextra -sv -hlmdebug off -plusperf -newperf -perfstat -logfile cadence_$(SEED).log -svseed $(SEED)
 
 comp_xilinx:
 	$(XILINX_ENV) && \

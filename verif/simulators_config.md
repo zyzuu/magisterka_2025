@@ -50,3 +50,11 @@ abilities
 -plusperf
 -newperf
 -perfstats
+
+# Synopsys VCS
+## vcs
+-sverilog
+-Xkeyopt=rtopt
+-Xkeyopt=mvu
++rad
+## simv
