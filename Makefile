@@ -103,9 +103,3 @@ run_xilinx:
 	$(XILINX_ENV) && \
 	xsim top -testplusarg UVM_TESTNAME=base_test -R -sv_seed $(SEED) --log xsim_$(SEED).log
 #xsim top -R -testplusarg UVM_TESTNAME=adder_4_bit_basic_test
-
-
-
-
-
-all: comp_env_files run
