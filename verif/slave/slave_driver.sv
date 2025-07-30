@@ -35,8 +35,8 @@ class slave_driver extends uvm_driver#(base_transaction);
       if (!s_vif.rst_i) begin
         wait(s_vif.cyc == 1 && s_vif.stb == 1);
 
-        if(s_vif.we == 0) begin // SINGLE READ CYCLE
-          s_vif.data_out = $isunknown(memory[s_vif.addr]) ? 32'b0 : memory[s_vif.addr];
+        if(s_vif.we == 0) begin
+          s_vif.data_out = !memory.exists(s_vif.addr) ? 32'b0 : memory[s_vif.addr];
           `uvm_info(get_type_name(), $sformatf("READ s_vif.addr: %h, s_vif.data_out: %h, s_vif.data_in: %h", s_vif.addr, s_vif.data_out, s_vif.data_in), UVM_DEBUG);
         end
         else begin
