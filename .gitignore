@@ -6,3 +6,16 @@ work/
 verif_lib/
 transcript
 design_lib/
+xcelium.d/
+simv
+.simvision/
+novas*
+verdi*
+vivado*
+work*
+xsim*
+xrun*
+*.pb
+*.fsdb
+*.asdb
+

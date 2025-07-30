@@ -20,7 +20,7 @@ class slave_monitor extends uvm_monitor;
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction = new();
+      base_transaction m_base_transaction = new();
     forever begin
       wait(s_vif.cyc == 1 && s_vif.stb == 1);
       m_base_transaction.addr = s_vif.addr;

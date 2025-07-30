@@ -38,7 +38,6 @@ class master_driver extends uvm_driver#(base_transaction);
           m_vif.sel = m_base_transaction.addr[31:28];
           m_vif.cyc = 1;
           m_vif.stb = 1;
-          m_vif.data_in = m_base_transaction.data_in;
           m_vif.data_out = m_base_transaction.data_out;
 
         if (m_base_transaction.operation == READ) begin
