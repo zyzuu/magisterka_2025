@@ -30,7 +30,7 @@ endif
 
 comp_questa:
 	$(SIEMENS_ENV)  && \
-	vlog $(VERIF_SRCS) -L $(QUESTA_HOME)/uvm-1.2 -timescale=1ns/1ns -sv
+	vlog $(VERIF_SRCS) $(DESIGN_DIR) -L $(QUESTA_HOME)/uvm-1.2 -timescale=1ns/1ns -sv
 
 elab_questa:
 	$(SIEMENS_ENV) && \
@@ -46,6 +46,8 @@ run_questa:
 #-uvmver 1.2
 comp_aldec:
 	$(ALDEC_ENV) && \
+	vlib work && \
+  set worklib && \
 	vlog $(DESIGN_DIR)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(VERIF_SRCS) -sv2k17 -timescale 1ns/1ns -uvmver 1.2 -O3 -nodebug
 
 run_aldec:
@@ -63,7 +65,7 @@ comp_vcs:
 #	vcs -kdb -debug_access+all -timescale=1ns/1ns -sverilog +v2k -ntb_opts uvm-1.2 +incdir+$(DESIGN_DIR_)  +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
 
 run_vcs:
-	$(SYNOPSYS_ENV) && \
+	#$(SYNOPSYS_ENV) && \
 	./simv +ntb_random_seed $(SEED) -l vcs_$(SEED).log -reportstats
 
 comp_master_files:

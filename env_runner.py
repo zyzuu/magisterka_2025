@@ -6,6 +6,10 @@ commands_2_stage = ["comp", "run"]
 tools_3_stage = ["questa", "cadence", "xilinx"]
 tools_2_stage = ["aldec", "vcs"]
 
+#tools_3_stage = ["questa"]
+#tools_2_stage = ["aldec"]
+
+
 cmds_tools_3_stage = [f"{cmd}_{tool}" for tool in tools_3_stage for cmd in commands_3_stage]
 cmds_tools_2_stage = [f"{cmd}_{tool}" for tool in tools_2_stage for cmd in commands_2_stage]
 
@@ -20,5 +24,5 @@ def run(stages=3, num_of_tests=10):
 
 
 if __name__ == "__main__":
-  run(stages=2)
   run(stages=3)
+  run(stages=2)
