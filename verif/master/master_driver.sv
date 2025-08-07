@@ -11,10 +11,6 @@ class master_driver extends uvm_driver#(base_transaction);
     super.new(name, parent);
   endfunction: new
 
-  function void build_phase(uvm_phase phase);
-    super.build_phase(phase);
-  endfunction: build_phase
-
   function void set_vif(string if_name);
     if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
     `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))

@@ -15,10 +15,6 @@ class slave_monitor extends uvm_monitor;
   endfunction: set_vif
 
 
-  function void build_phase(uvm_phase phase);
-    super.build_phase(phase);
-  endfunction: build_phase
-
   task run_phase(uvm_phase phase);
       base_transaction m_base_transaction = new();
     forever begin

@@ -3,7 +3,7 @@
 class base_sequence extends uvm_sequence #(base_transaction);
   `uvm_object_utils(base_sequence)
 
-  int number_of_transactions = 10000;
+  int number_of_transactions = 1000;
   base_transaction m_base_transaction;
 
   function new(string name = "base_sequence");

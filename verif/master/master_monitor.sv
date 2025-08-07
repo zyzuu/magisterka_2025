@@ -12,10 +12,6 @@ class master_monitor extends uvm_monitor;
     `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
   endfunction: set_vif
 
-  function void build_phase(uvm_phase phase);
-    super.build_phase(phase);
-  endfunction: build_phase
-
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction = new();
     forever begin

@@ -21,6 +21,7 @@ class base_transaction extends uvm_sequence_item;
   bit         ack;   // Acknowledge (Master: m0_ack_o, Slave: s0_ack_i)
   bit         err;   // Error (Master: m0_err_o, Slave: s0_err_i)
   bit         rty;   // Retry (Master: m0_rty_o, Slave: s0_rty_i)
+  rand int  size;
 
 
   //  Factory registration for fields
@@ -48,10 +49,18 @@ class base_transaction extends uvm_sequence_item;
     sel == addr[31:28];
   }
   constraint c__data_in {
-    data_in.size() == 1000;
-    foreach (data_in[i]) data_in[i] == i;
+    //data_in.size() == 64000;
+    size == 64000;
   }
+
   function new(string name = "base_transaction");
     super.new(name);
   endfunction: new
+
+  function void post_randomize();
+    data_in = new[size];
+    foreach (data_in[i]) begin
+      data_in[i] = i;
+    end
+  endfunction : post_randomize
 endclass: base_transaction
