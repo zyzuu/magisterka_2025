@@ -16,8 +16,10 @@ class master_driver extends uvm_driver#(base_transaction);
   endfunction: build_phase
 
   function void set_vif(string if_name);
-    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
-    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
+    if (!uvm_config_db#(virtual base_if)::get(null, "*", if_name, m_vif)) begin
+      $display($sformatf("FATAL, %s, Could not get %s from factory", get_type_name(), if_name));
+      $finish;
+    end
   endfunction: set_vif
 
   task run_phase(uvm_phase phase);
@@ -27,7 +29,7 @@ class master_driver extends uvm_driver#(base_transaction);
       seq_item_port.get_next_item(m_base_transaction);
       drive_data(m_base_transaction);
       seq_item_port.item_done();
-      `uvm_info(get_type_name(), "After item_done call!", UVM_DEBUG);
+      //$display($sformatf("%s, After item_done call!", get_type_name()));
     end
   endtask: run_phase
 
@@ -55,7 +57,7 @@ class master_driver extends uvm_driver#(base_transaction);
           m_vif.cyc = 0;
       end
       else begin // Reset actions
-        `uvm_info(get_type_name(), "Entered reset state!", UVM_DEBUG)
+        //$display($sformatf("%s, Entered reset state!",get_type_name()));
 
         m_vif.data_in = 0;
         m_vif.addr = 0;
@@ -69,7 +71,7 @@ class master_driver extends uvm_driver#(base_transaction);
         m_vif.rty = 0;
         @(posedge m_vif.clk_i);
         @(negedge m_vif.clk_i);
-        `uvm_info(get_type_name(), "Reset done!", UVM_DEBUG)
+        //$display($sformatf("%s Reset done!", get_type_name()));
       end
   endtask: drive_data
 endclass: master_driver

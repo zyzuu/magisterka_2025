@@ -8,8 +8,10 @@ class master_monitor extends uvm_monitor;
   endfunction: new
 
   function void set_vif(string if_name);
-    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
-    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
+    if (!uvm_config_db#(virtual base_if)::get(null, "*", if_name, m_vif)) begin
+      $display($sformatf("FATAL, %s, Could not get %s from factory", get_type_name(), if_name));
+      $finish;
+    end
   endfunction: set_vif
 
   function void build_phase(uvm_phase phase);
@@ -17,8 +19,8 @@ class master_monitor extends uvm_monitor;
   endfunction: build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction = new();
     forever begin
+      base_transaction m_base_transaction = new();
       wait(m_vif.cyc && m_vif.stb);
       m_base_transaction.data_out = m_vif.we ? m_vif.data_out : 0;
       m_base_transaction.addr = m_vif.addr;

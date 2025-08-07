@@ -34,6 +34,7 @@ class base_env extends uvm_env;
   endfunction: new
 
   function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     m_agent_00 = master_agent::type_id::create("m_agent_00", this);
     m_agent_01 = master_agent::type_id::create("m_agent_01", this);
     m_agent_02 = master_agent::type_id::create("m_agent_02", this);

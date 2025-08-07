@@ -22,6 +22,7 @@ class slave_agent extends uvm_agent;
   endfunction: parse_if_number
 
   function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     //$display("S_AGENT | build_phase | is_active: %d", get_is_active());
     if (get_is_active()) begin
       s_driver_h = slave_driver::type_id::create("s_driver_h", this);

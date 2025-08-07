@@ -48,7 +48,7 @@ class base_transaction extends uvm_sequence_item;
     sel == addr[31:28];
   }
   constraint c__data_in {
-    data_in.size() == 1000;
+    data_in.size() == 64000;
     foreach (data_in[i]) data_in[i] == i;
   }
   function new(string name = "base_transaction");
