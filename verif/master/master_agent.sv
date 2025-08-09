@@ -37,7 +37,7 @@ class master_agent extends uvm_agent;
     if (get_is_active()) begin
       m_driver_h.seq_item_port.connect(m_sequencer_h.seq_item_export);
     end
-    uvm_config_db #(master_sequencer)::set(null, "Sequencers", $sformatf("agent_%s_sqr", if_number), m_sequencer_h);
+    uvm_config_db #(master_sequencer)::set(null, "*", $sformatf("agent_%s_sqr", if_number), m_sequencer_h);
   endfunction: connect_phase
 
 endclass: master_agent

@@ -8,7 +8,7 @@ class master_monitor extends uvm_monitor;
   endfunction: new
 
   function void set_vif(string if_name);
-    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
+    if (!uvm_config_db#(virtual base_if)::get(null, "*", if_name, m_vif))
     `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
   endfunction: set_vif
 
