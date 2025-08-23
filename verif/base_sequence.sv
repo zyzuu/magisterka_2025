@@ -3,24 +3,30 @@
 class base_sequence extends uvm_sequence #(base_transaction);
   `uvm_object_utils(base_sequence)
 
-  int number_of_transactions = 1000;
-  base_transaction m_base_transaction;
+  rand base_transaction m_req, m_rsp;
+  rand int number_of_transactions = 1;
+  rand bit [AW-1:0] destination_address;
+  rand bit [SW-1:0] sel;
+  rand bit transaction_type;
+  rand cycle_type_t cycle_type;
+
 
   function new(string name = "base_sequence");
     super.new(name);
   endfunction: new
 
   virtual task body();
-    m_base_transaction = base_transaction::type_id::create("m_base_transaction");
-    for (int i=0; i<number_of_transactions; ++i) begin
-      m_base_transaction.randomize() with {
-        mode == MASTER_MODE;
-      };
-      start_item(m_base_transaction);
-      `uvm_info(get_type_name(), "After start_item call!", UVM_DEBUG);
-      finish_item(m_base_transaction);
-      `uvm_info(get_type_name(), "After finish_item call!", UVM_DEBUG);
-    end
+    m_req = base_transaction::type_id::create("m_req");
+    m_req.randomize() with {
+      mode == MASTER_MODE;
+      num_of_transactions == number_of_transactions;
+      addr == destination_address;
+      cycle_type == SINGLE;
+    };
+    start_item(m_req);
+    `uvm_info(get_type_name(), "After start_item call!", UVM_DEBUG);
+    finish_item(m_req);
+    `uvm_info(get_type_name(), "After finish_item call!", UVM_DEBUG);
   endtask: body
 
 endclass: base_sequence
