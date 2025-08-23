@@ -50,8 +50,8 @@ module top;
   .clk_i(clk),
   .rst_i(reset),
   // Master 0 Interface
-  .m0_data_i(m_vif_00.data_in),
-  .m0_data_o(m_vif_00.data_out),
+  .m0_data_i(m_vif_00.data_out),
+  .m0_data_o(m_vif_00.data_in),
   .m0_addr_i(m_vif_00.addr),
   .m0_sel_i(m_vif_00.sel),
   .m0_we_i(m_vif_00.we),
@@ -62,8 +62,8 @@ module top;
   .m0_rty_o(m_vif_00.rty),
 
   // Master 1 Interface
-  .m1_data_i(m_vif_01.data_in),
-  .m1_data_o(m_vif_01.data_out),
+  .m1_data_i(m_vif_01.data_out),
+  .m1_data_o(m_vif_01.data_in),
   .m1_addr_i(m_vif_01.addr),
   .m1_sel_i(m_vif_01.sel),
   .m1_we_i(m_vif_01.we),
@@ -74,8 +74,8 @@ module top;
   .m1_rty_o(m_vif_01.rty),
 
   // Master 2 Interface
-  .m2_data_i(m_vif_02.data_in),
-  .m2_data_o(m_vif_02.data_out),
+  .m2_data_i(m_vif_02.data_out),
+  .m2_data_o(m_vif_02.data_in),
   .m2_addr_i(m_vif_02.addr),
   .m2_sel_i(m_vif_02.sel),
   .m2_we_i(m_vif_02.we),
@@ -86,8 +86,8 @@ module top;
   .m2_rty_o(m_vif_02.rty),
 
   // Master 3 Interface
-  .m3_data_i(m_vif_03.data_in),
-  .m3_data_o(m_vif_03.data_out),
+  .m3_data_i(m_vif_03.data_out),
+  .m3_data_o(m_vif_03.data_in),
   .m3_addr_i(m_vif_03.addr),
   .m3_sel_i(m_vif_03.sel),
   .m3_we_i(m_vif_03.we),
@@ -98,8 +98,8 @@ module top;
   .m3_rty_o(m_vif_03.rty),
 
   // Master 4 Interface
-  .m4_data_i(m_vif_04.data_in),
-  .m4_data_o(m_vif_04.data_out),
+  .m4_data_i(m_vif_04.data_out),
+  .m4_data_o(m_vif_04.data_in),
   .m4_addr_i(m_vif_04.addr),
   .m4_sel_i(m_vif_04.sel),
   .m4_we_i(m_vif_04.we),
@@ -110,8 +110,8 @@ module top;
   .m4_rty_o(m_vif_04.rty),
 
   // Master 5 Interface
-  .m5_data_i(m_vif_05.data_in),
-  .m5_data_o(m_vif_05.data_out),
+  .m5_data_i(m_vif_05.data_out),
+  .m5_data_o(m_vif_05.data_in),
   .m5_addr_i(m_vif_05.addr),
   .m5_sel_i(m_vif_05.sel),
   .m5_we_i(m_vif_05.we),
@@ -122,8 +122,8 @@ module top;
   .m5_rty_o(m_vif_05.rty),
 
   // Master 6 Interface
-  .m6_data_i(m_vif_06.data_in),
-  .m6_data_o(m_vif_06.data_out),
+  .m6_data_i(m_vif_06.data_out),
+  .m6_data_o(m_vif_06.data_in),
   .m6_addr_i(m_vif_06.addr),
   .m6_sel_i(m_vif_06.sel),
   .m6_we_i(m_vif_06.we),
@@ -134,8 +134,8 @@ module top;
   .m6_rty_o(m_vif_06.rty),
 
   // Master 7 Interface
-  .m7_data_i(m_vif_07.data_in),
-  .m7_data_o(m_vif_07.data_out),
+  .m7_data_i(m_vif_07.data_out),
+  .m7_data_o(m_vif_07.data_in),
   .m7_addr_i(m_vif_07.addr),
   .m7_sel_i(m_vif_07.sel),
   .m7_we_i(m_vif_07.we),

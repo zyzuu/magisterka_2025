@@ -6,6 +6,7 @@ class master_driver extends uvm_driver#(base_transaction);
   virtual base_if m_vif;
   string if_name;
   base_transaction m_base_transaction;
+  int transaction_counter = 0;
 
   function new(string name = "master_driver", uvm_component parent=null);
     super.new(name, parent);
@@ -18,54 +19,59 @@ class master_driver extends uvm_driver#(base_transaction);
 
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction;
+    while(m_vif.rst_i) drive_init_reset();
 
     forever begin
       seq_item_port.get_next_item(m_base_transaction);
       drive_data(m_base_transaction);
-      seq_item_port.item_done();
+      seq_item_port.item_done(m_base_transaction);
       `uvm_info(get_type_name(), "After item_done call!", UVM_DEBUG);
     end
   endtask: run_phase
 
-  task drive_data(base_transaction m_base_transaction);
+  task drive_init_reset();
+      `uvm_info(get_type_name(), "Entered reset state!", UVM_DEBUG)
+      m_vif.addr = 0;
+      m_vif.sel = 0;
+      m_vif.we = 0;
+      m_vif.cyc = 0;
+      m_vif.stb = 0;
+      m_vif.data_out = 0;
       @(posedge m_vif.clk_i);
-      if (!m_vif.rst_i) begin
-          m_vif.addr = m_base_transaction.addr;
-          m_vif.sel = m_base_transaction.addr[31:28];
-          m_vif.cyc = 1;
-          m_vif.stb = 1;
-          m_vif.data_out = m_base_transaction.data_out;
+      `uvm_info(get_type_name(), "Reset done!", UVM_DEBUG)
+  endtask : drive_init_reset
 
-        if (m_base_transaction.operation == READ) begin
-          m_vif.we = 0; // Assert READ
-        end
-        else begin
-          m_vif.we = 1; // Assert WRITE
-        end
+  task drive_data(base_transaction m_base_transaction);
+      transaction_counter++;
+      m_vif.addr = m_base_transaction.addr;
+      m_vif.sel = m_base_transaction.sel;
+      m_vif.cyc = m_base_transaction.cyc;
+      m_vif.stb = m_base_transaction.stb;
+      m_vif.we = m_base_transaction.we;
 
-          @(posedge m_vif.clk_i);
-          wait (m_vif.ack == 1);
-          @(posedge m_vif.clk_i);
+      @(posedge m_vif.clk_i);
+      wait (m_vif.ack == 1);
 
-          m_vif.stb = 0;
-          m_vif.cyc = 0;
-      end
-      else begin // Reset actions
-        `uvm_info(get_type_name(), "Entered reset state!", UVM_DEBUG)
+      if (m_base_transaction.we)
+        m_vif.data_out = m_base_transaction.data_out;
+      else
+        m_base_transaction.data_in = m_vif.data_in;
 
-        m_vif.data_in = 0;
-        m_vif.addr = 0;
-        m_vif.sel = 0;
-        m_vif.we = 0;
-        m_vif.cyc = 0;
+      m_base_transaction.ack = m_vif.ack;
+      @(posedge m_vif.clk_i);
+
+      if (m_base_transaction.insert_wait_state) begin
         m_vif.stb = 0;
-        m_vif.data_out = 0;
-        m_vif.ack = 0;
-        m_vif.err = 0;
-        m_vif.rty = 0;
-        @(posedge m_vif.clk_i);
-        @(negedge m_vif.clk_i);
-        `uvm_info(get_type_name(), "Reset done!", UVM_DEBUG)
+        repeat(m_base_transaction.wait_state_duration)
+          @(posedge m_vif.clk_i);
       end
+
+
+      if (m_base_transaction.cycle_type == SINGLE || transaction_counter == m_base_transaction.num_of_transactions) begin
+        m_vif.stb = 0;
+        m_vif.cyc = 0;
+        transaction_counter = 0;
+      end
+      @(posedge m_vif.clk_i);
   endtask: drive_data
 endclass: master_driver

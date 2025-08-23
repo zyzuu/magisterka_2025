@@ -18,14 +18,15 @@ class slave_monitor extends uvm_monitor;
   task run_phase(uvm_phase phase);
       base_transaction m_base_transaction = new();
     forever begin
-      wait(s_vif.cyc == 1 && s_vif.stb == 1);
+      wait((s_vif.cyc && s_vif.stb) || (s_vif.cyc && !s_vif.stb));
       m_base_transaction.addr = s_vif.addr;
       m_base_transaction.sel = s_vif.sel;
       m_base_transaction.we = s_vif.we;
       m_base_transaction.operation = operation_t'(s_vif.we);
       m_base_transaction.cyc = s_vif.cyc;
       m_base_transaction.stb = s_vif.stb;
-      m_base_transaction.data_out = !s_vif.we ? s_vif.data_out : 0;
+      m_base_transaction.data_out = s_vif.we ? s_vif.data_out : 0;
+      m_base_transaction.data_in = !s_vif.we ? s_vif.data_in : 0;
       m_base_transaction.ack = s_vif.ack;
       m_base_transaction.err = s_vif.err;
       m_base_transaction.rty = s_vif.rty;
