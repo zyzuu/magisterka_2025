@@ -28,6 +28,9 @@ class base_env extends uvm_env;
   slave_agent s_agent_14;
   slave_agent s_agent_15;
 
+  // Scoreboard
+  base_scoreboard m_base_scoreboard;
+
 
   function new(string name="base_env", uvm_component parent=null);
     super.new(name, parent);
@@ -59,5 +62,35 @@ class base_env extends uvm_env;
     s_agent_13 = slave_agent::type_id::create("s_agent_13", this);
     s_agent_14 = slave_agent::type_id::create("s_agent_14", this);
     s_agent_15 = slave_agent::type_id::create("s_agent_15", this);
+
+    m_base_scoreboard = base_scoreboard::type_id::create("m_base_scoreboard", this);
   endfunction: build_phase
+
+  function void connect_phase(uvm_phase phase);
+    m_agent_00.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_01.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_02.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_03.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_04.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_05.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_06.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_07.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+
+    s_agent_00.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_01.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_02.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_03.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_04.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_05.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_06.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_07.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_08.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_09.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_10.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_11.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_12.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_13.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_14.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+    s_agent_15.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+  endfunction : connect_phase
 endclass

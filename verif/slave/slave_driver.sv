@@ -3,13 +3,12 @@
 class slave_driver extends uvm_driver#(base_transaction);
   `uvm_component_utils(slave_driver)
 
-  // Parameters
-  parameter int TRANSACTION_DELAY = 100; // unit: us
   logic [31:0] memory [*];
 
-  // Virtual interface
   virtual base_if s_vif;
   string if_name;
+
+  uvm_analysis_port #(base_transaction) driver_port;
 
   function new(string name = "slave_driver", uvm_component parent=null);
     super.new(name, parent);
@@ -43,6 +42,11 @@ class slave_driver extends uvm_driver#(base_transaction);
     wait(s_vif.cyc && s_vif.stb);
     @(posedge s_vif.clk_i);
 
+    s_vif.ack = 1;
+    s_vif.err = 0;
+    s_vif.rty = 0;
+    @(posedge s_vif.clk_i);
+
     if(s_vif.we == 0) begin
       //s_vif.data_out = !memory.exists(s_vif.addr) ? 32'b0 : memory[s_vif.addr];
       `uvm_info(get_type_name(), $sformatf("READ s_vif.addr: %h, s_vif.data_out: %h, s_vif.data_in: %h", s_vif.addr, s_vif.data_out, s_vif.data_in), UVM_DEBUG);
@@ -52,11 +56,6 @@ class slave_driver extends uvm_driver#(base_transaction);
       //memory[s_vif.addr] = s_vif.data_out;
       `uvm_info(get_type_name(), $sformatf("WRITE s_vif.addr: %h, s_vif.data_out: %h, s_vif.data_in: %h", s_vif.addr, s_vif.data_out, s_vif.data_in), UVM_DEBUG);
     end
-
-    s_vif.ack = 1;
-    s_vif.err = 0;
-    s_vif.rty = 0;
-
     @(posedge s_vif.clk_i);
 
     s_vif.ack = 0;

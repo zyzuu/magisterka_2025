@@ -8,6 +8,8 @@ class master_driver extends uvm_driver#(base_transaction);
   base_transaction m_base_transaction;
   int transaction_counter = 0;
 
+  uvm_analysis_port #(base_transaction) driver_port;
+
   function new(string name = "master_driver", uvm_component parent=null);
     super.new(name, parent);
   endfunction: new
@@ -16,6 +18,10 @@ class master_driver extends uvm_driver#(base_transaction);
     if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, m_vif))
     `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
   endfunction: set_vif
+
+  function void build_phase(uvm_phase phase);
+    driver_port = new("driver_port", this);
+  endfunction : build_phase
 
   task run_phase(uvm_phase phase);
     base_transaction m_base_transaction;
@@ -72,6 +78,7 @@ class master_driver extends uvm_driver#(base_transaction);
         m_vif.cyc = 0;
         transaction_counter = 0;
       end
+      driver_port.write(m_base_transaction);
       @(posedge m_vif.clk_i);
   endtask: drive_data
 endclass: master_driver

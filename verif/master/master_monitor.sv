@@ -3,6 +3,8 @@ class master_monitor extends uvm_monitor;
 
   virtual base_if m_vif;
 
+  uvm_analysis_port #(base_transaction) monitor_port;
+
   function new(string name = "master_monitor", uvm_component parent=null);
     super.new(name, parent);
   endfunction: new
@@ -16,6 +18,7 @@ class master_monitor extends uvm_monitor;
     base_transaction m_base_transaction = new();
     forever begin
       wait(m_vif.cyc && m_vif.stb);
+       wait (m_vif.ack == 1);
       m_base_transaction.data_out = m_vif.we ? m_vif.data_out : 0;
       m_base_transaction.addr = m_vif.addr;
       m_base_transaction.sel = m_vif.sel;

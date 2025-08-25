@@ -1,3 +1,6 @@
+`uvm_analysis_imp_decl(_TX)
+`uvm_analysis_imp_decl(_RX)
+
 class master_agent extends uvm_agent;
   `uvm_component_utils(master_agent)
 
