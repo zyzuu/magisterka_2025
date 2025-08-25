@@ -8,16 +8,22 @@ class slave_driver extends uvm_driver#(base_transaction);
   virtual base_if s_vif;
   string if_name;
 
+  bit insert_wait_state = 0;
+  int wait_state_duration = 0; // clock cycles
+
   uvm_analysis_port #(base_transaction) driver_port;
 
   function new(string name = "slave_driver", uvm_component parent=null);
     super.new(name, parent);
-  endfunction: new
+  endfunction : new
 
-  function void set_vif(string if_name);
-    if (!uvm_config_db#(virtual base_if)::get(null, "uvm_test_top", if_name, s_vif))
-    `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", if_name))
-  endfunction: set_vif
+  function void build_phase(uvm_phase phase);
+    if (!uvm_config_db#(virtual base_if)::get(this, "", "s_vif", s_vif))
+      `uvm_fatal(get_type_name(), $sformatf("Could not get %p from factory", s_vif))
+
+    uvm_config_db#(bit)::get(this,"","insert_wait_state", insert_wait_state);
+    uvm_config_db#(int)::get(this,"","wait_state_duration", wait_state_duration);
+  endfunction : build_phase
 
   task drive_init_reset();
       `uvm_info(get_type_name(), "Entered reset state!", UVM_DEBUG)
@@ -35,12 +41,18 @@ class slave_driver extends uvm_driver#(base_transaction);
       drive_data();
       `uvm_info(get_type_name(), "After item_done call!", UVM_DEBUG);
     end
-  endtask: run_phase
+  endtask : run_phase
 
 
   task drive_data();
     wait(s_vif.cyc && s_vif.stb);
     @(posedge s_vif.clk_i);
+
+    if (insert_wait_state) begin
+      s_vif.ack = 0;
+      repeat(wait_state_duration)
+        @(posedge s_vif.clk_i);
+    end
 
     s_vif.ack = 1;
     s_vif.err = 0;
@@ -60,5 +72,5 @@ class slave_driver extends uvm_driver#(base_transaction);
 
     s_vif.ack = 0;
     @(posedge s_vif.clk_i);
-  endtask: drive_data
-endclass: slave_driver
+  endtask : drive_data
+endclass : slave_driver

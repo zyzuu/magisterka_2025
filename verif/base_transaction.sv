@@ -18,9 +18,6 @@ class base_transaction extends uvm_sequence_item;
   bit         err;   // Error (Master: m0_err_o, Slave: s0_err_i)
   bit         rty;   // Retry (Master: m0_rty_o, Slave: s0_rty_i)
   rand int num_of_transactions;
-  bit insert_wait_state = 0;
-  int wait_state_duration = 0;
-
 
   //  Factory registration for fields
   `uvm_object_utils_begin(base_transaction)
