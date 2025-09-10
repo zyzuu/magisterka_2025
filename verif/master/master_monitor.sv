@@ -32,6 +32,7 @@ class master_monitor extends uvm_monitor;
       m_base_transaction.err = m_vif.err;
       m_base_transaction.rty = m_vif.rty;
       @(posedge m_vif.clk_i);
+      monitor_port.write(m_base_transaction);
     end
   endtask : run_phase
 

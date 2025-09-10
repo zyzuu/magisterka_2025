@@ -347,6 +347,7 @@ module top;
     uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.m_agent_05","m_vif_05",m_vif_05);
     uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.m_agent_06","m_vif_06",m_vif_06);
     uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.m_agent_07","m_vif_07",m_vif_07);
+    uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.m_agent_ral","m_vif_00",m_vif_00);
 
     uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.s_agent_00","s_vif_00",s_vif_00);
     uvm_config_db#(virtual base_if)::set(null,"uvm_test_top.env.s_agent_01","s_vif_01",s_vif_01);

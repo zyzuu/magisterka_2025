@@ -9,6 +9,7 @@ class base_env extends uvm_env;
   master_agent m_agent_05;
   master_agent m_agent_06;
   master_agent m_agent_07;
+  master_agent m_agent_ral;
 
   // Slave side
   slave_agent s_agent_00;
@@ -31,6 +32,8 @@ class base_env extends uvm_env;
   // Scoreboard
   base_scoreboard m_base_scoreboard;
 
+  // RAL
+  uvm_reg_predictor#(base_transaction) m_reg_predictor;
 
   function new(string name="base_env", uvm_component parent=null);
     super.new(name, parent);
@@ -45,6 +48,7 @@ class base_env extends uvm_env;
     m_agent_05 = master_agent::type_id::create("m_agent_05", this);
     m_agent_06 = master_agent::type_id::create("m_agent_06", this);
     m_agent_07 = master_agent::type_id::create("m_agent_07", this);
+    m_agent_ral = master_agent::type_id::create("m_agent_ral", this);
 
     s_agent_00 = slave_agent::type_id::create("s_agent_00", this);
     s_agent_01 = slave_agent::type_id::create("s_agent_01", this);
@@ -64,6 +68,7 @@ class base_env extends uvm_env;
     s_agent_15 = slave_agent::type_id::create("s_agent_15", this);
 
     m_base_scoreboard = base_scoreboard::type_id::create("m_base_scoreboard", this);
+    m_reg_predictor = uvm_reg_predictor#(base_transaction)::type_id::create("m_reg_predictor", this);
   endfunction: build_phase
 
   function void connect_phase(uvm_phase phase);
@@ -92,5 +97,8 @@ class base_env extends uvm_env;
     s_agent_13.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
     s_agent_14.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
     s_agent_15.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
+
+    m_reg_predictor.adapter = m_agent_ral.m_reg_adapter_h;
+    m_agent_ral.m_monitor_h.monitor_port.connect (m_reg_predictor.bus_in);
   endfunction : connect_phase
 endclass

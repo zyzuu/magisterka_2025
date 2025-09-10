@@ -6,6 +6,7 @@ package env_pkg;
   import master_pkg::*;
   import seq_pkg::*;
   import share_pkg::*;
+  import ral_pkg::*;
 
   `include "base_scoreboard.sv"
   `include "base_env.sv"
