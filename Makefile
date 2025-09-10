@@ -6,10 +6,12 @@ VCS_HOME = /eda/synopsys/2023-24/RHELx86/VCS_2023.12/etc/
 VERIF_SRCS_MASTER_HOME = $(VERIF_DIR)/master
 VERIF_SRCS_SLAVE_HOME = $(VERIF_DIR)/slave
 VERIF_SRCS :=
+VERIF_SRCS += $(VERIF_DIR)/share_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/base_if.sv
 VERIF_SRCS += $(VERIF_DIR)/seq_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/master/master_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/slave/slave_pkg.sv
+VERIF_SRCS += $(VERIF_DIR)/ral/ral_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/env_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/top.sv
 #VERIF_SRCS += $(VERIF_DIR)/base_env.sv
@@ -34,11 +36,13 @@ comp_questa:
 
 elab_questa:
 	$(SIEMENS_ENV) && \
-	vopt -O5 top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 -noincr -nodebug
+	vopt +acc -O5 top -o top_opt -L $(QUESTA_HOME)/uvm-1.2 -noincr
 
 run_questa:
 	$(SIEMENS_ENV)  && \
-	vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -do "run -all;" -logfile sim_$(SEED).log -uvmcontrol=none -sv_seed $(SEED) -stats=perf
+	taskset -c 0-11 vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -autoprofile -logfile sim_$(SEED).log -classdebug  -stats=perf -lineinfo -verboseprofile -do sim.do -uvmcontrol=all
+#-do "run -all;"
+#-sv_seed $(SEED)
 #vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
 # -c -> command line interface
 # +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE +UVM_OBJECTION_TRACE
