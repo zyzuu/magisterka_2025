@@ -63,20 +63,20 @@ class base_vseq extends uvm_sequence #(base_transaction);
     end
 
 
-    $displayh("regmodel: %p", regmodel);
+    //$displayh("regmodel: %p", regmodel);
     regmodel.config_reg_s0.write(status, 'h3);
-    $displayh("status: %p", status);
-    regmodel.config_reg_s0.read(status, rdata);
-    $displayh("status: %p, rdata: %p", status, rdata);
-    regmodel.config_reg_s1.write(status, 'h4);
-    regmodel.config_reg_s4.write(status, 'h7);
-    regmodel.config_reg_s10.write(status, 'h9);
-    regmodel.config_reg_s15.write(status, 'hF);
+    //$displayh("status: %p", status);
+    //regmodel.config_reg_s0.read(status, rdata);
+    //$displayh("status: %p, rdata: %p", status, rdata);
+    //regmodel.config_reg_s1.write(status, 'h4);
+    //regmodel.config_reg_s4.write(status, 'h7);
+    //regmodel.config_reg_s10.write(status, 'h9);
+    //regmodel.config_reg_s15.write(status, 'hF);
 
 
     prio_seq.randomize with {
       s_we == 1;
-      destination_address == 32'hFF00_0004;
+      destination_address == 32'hF000_0004;
       r_data_out == {16'b0, 2'b11, 2'b00, 2'b00, 2'b00, 2'b00, 2'b00, 2'b00, 2'b00};
     };
 

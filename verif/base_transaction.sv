@@ -6,20 +6,18 @@ class base_transaction extends uvm_sequence_item;
   rand operation_t operation;
   rand cycle_type_t cycle_type = SINGLE;
 
-  // Unified fields for both Master and Slave interfaces
-  bit [DW-1:0] data_in;  // Input data (Master: m0_data_i, Slave: s0_data_o)
-  rand bit [DW-1:0] data_out;  // Output data (Master: m0_data_o, Slave: s0_data_i)
-  rand bit [AW-1:0] addr;  // Address (Master: m0_addr_i, Slave: s0_addr_o)
-  rand bit [SW-1:0] sel;   // Select lines (Master: m0_sel_i, Slave: s0_sel_o)
-  rand bit      we;    // Write enable (Master: m0_we_i, Slave: s0_we_o)
-  rand bit      cyc;   // Cycle valid (Master: m0_cyc_i, Slave: s0_cyc_o)
-  rand bit      stb;   // Strobe (Master: m0_stb_i, Slave: s0_stb_o)
-  bit         ack;   // Acknowledge (Master: m0_ack_o, Slave: s0_ack_i)
-  bit         err;   // Error (Master: m0_err_o, Slave: s0_err_i)
-  bit         rty;   // Retry (Master: m0_rty_o, Slave: s0_rty_i)
+  bit [DW-1:0] data_in;
+  rand bit [DW-1:0] data_out;
+  rand bit [AW-1:0] addr;
+  rand bit [SW-1:0] sel; // Not used by our agents, always DW of data is send and recevied
+  rand bit      we;
+  rand bit      cyc;
+  rand bit      stb;
+  bit         ack;
+  bit         err;
+  bit         rty;
   rand int num_of_transactions;
 
-  //  Factory registration for fields
   `uvm_object_utils_begin(base_transaction)
     `uvm_field_enum(operation_t, operation, UVM_ALL_ON)
     `uvm_field_enum(cycle_type_t, cycle_type, UVM_ALL_ON)
@@ -44,7 +42,8 @@ class base_transaction extends uvm_sequence_item;
   }
   constraint c__addr {
     addr[31:28] >= 0;
-    addr[31:28] < 4'hF;
+    addr[31:28] <= 4'hF;
+    addr[31:28] == 4'hF -> addr[27:24] != 4'hF;
     sel == 'd1;
   }
 

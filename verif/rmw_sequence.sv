@@ -1,5 +1,3 @@
-//  Class: rmw_sequence
-//
 class rmw_sequence extends base_sequence;
   `uvm_object_utils(rmw_sequence)
 
