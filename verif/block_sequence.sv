@@ -16,7 +16,7 @@ class block_sequence extends base_sequence;
       };
     for (int i=0; i<number_of_transactions; ++i) begin
     start_item(m_req);
-      m_req.addr += 'hF;
+      m_req.addr += 'hf;
       m_req.data_out += 'h1;
     finish_item(m_req);
     get_response(m_rsp);

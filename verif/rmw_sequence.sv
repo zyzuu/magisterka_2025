@@ -7,7 +7,6 @@ class rmw_sequence extends base_sequence;
 
   virtual task body();
     logic [DW-1:0] test_data = 'hDEAD_BEEF;
-    logic [AW-1:0] destination_address = 'hefff_0000;
     m_req = base_transaction::type_id::create("m_req");
     m_rsp = base_transaction::type_id::create("m_rsp");
       m_req.randomize() with {

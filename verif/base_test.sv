@@ -12,9 +12,10 @@ class base_test extends uvm_test;
   virtual function void build_phase(uvm_phase phase);
     env = base_env::type_id::create("env", this);
     vseq = base_vseq::type_id::create("vseq");
-    uvm_config_db#(bit)::set(env,"?_agent_*.?_driver_h","insert_wait_state",1);
-    uvm_config_db#(int)::set(env,"?_agent_*.s_driver_h","wait_state_duration",50);
-    uvm_config_db#(int)::set(env,"?_agent_*.m_driver_h","wait_state_duration",50);
+    uvm_config_db#(bit)::set(env,"s_agent_??.?_driver_h","insert_wait_state",1);
+    uvm_config_db#(bit)::set(env,"m_agent_??.m_driver_h","insert_wait_state",0);
+    uvm_config_db#(int)::set(env,"s_agent_??.s_driver_h","wait_state_duration",50);
+    uvm_config_db#(int)::set(env,"m_agent_??.m_driver_h","wait_state_duration",0);
 
     regmodel = config_block::type_id::create("regmodel", this);
     regmodel.build();
