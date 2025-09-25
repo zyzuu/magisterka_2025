@@ -27,6 +27,10 @@ ifneq ($(GUI),1)
 GUI_P = -c
 endif
 
+ifeq ($(DEBUG),1)
+DEBUG_CMD = +UVM_VERBOSITY=UVM_DEBUG
+endif
+
 #GUI_X = --gui --tclbatch xsim.tcl
 #GUI_X = -R
 
@@ -40,7 +44,7 @@ elab_questa:
 
 run_questa:
 	$(SIEMENS_ENV)  && \
-	taskset -c 0-11 vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -autoprofile -logfile sim_$(SEED).log -classdebug  -stats=perf -lineinfo -verboseprofile -do sim.do -uvmcontrol=all
+	taskset -c 0-11 vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -autoprofile -logfile sim_$(SEED).log -classdebug  -stats=perf -lineinfo -verboseprofile -do sim.do -uvmcontrol=all $(DEBUG_CMD)
 #-do "run -all;"
 #-sv_seed $(SEED)
 #vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
