@@ -18,6 +18,7 @@ class slave_driver extends uvm_driver#(base_transaction);
   endfunction : new
 
   function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     if (!uvm_config_db#(virtual base_if)::get(this, "", "s_vif", s_vif))
       `uvm_fatal(get_type_name(), $sformatf("Could not get %p from factory", s_vif))
 

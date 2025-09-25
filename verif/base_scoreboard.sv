@@ -16,6 +16,7 @@ class base_scoreboard extends uvm_scoreboard;
     function void build_phase (uvm_phase phase);
       ap_imp_monitor = new("ap_imp_monitor", this);
       ap_imp_driver = new("ap_imp_driver", this);
+      super.build_phase(phase);
     endfunction : build_phase
 
     virtual function void write_monitor (base_transaction monitored_data);

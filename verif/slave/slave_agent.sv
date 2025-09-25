@@ -19,6 +19,7 @@ class slave_agent extends uvm_agent;
   endfunction : parse_if_number
 
   function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     if (!uvm_config_db#(virtual base_if)::get(this, "", $sformatf("s_vif_%s", if_number), s_vif))
       `uvm_fatal(get_type_name(), $sformatf("Could not get %s from factory", "if_name"))
 

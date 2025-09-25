@@ -12,6 +12,7 @@ class base_test extends uvm_test;
   virtual function void build_phase(uvm_phase phase);
     env = base_env::type_id::create("env", this);
     vseq = base_vseq::type_id::create("vseq");
+    super.build_phase(phase);
     uvm_config_db#(bit)::set(env,"s_agent_??.?_driver_h","insert_wait_state",1);
     uvm_config_db#(bit)::set(env,"m_agent_??.m_driver_h","insert_wait_state",0);
     uvm_config_db#(int)::set(env,"s_agent_??.s_driver_h","wait_state_duration",50);

@@ -20,7 +20,7 @@ class master_driver extends uvm_driver#(base_transaction);
 
   function void build_phase(uvm_phase phase);
     driver_port = new("driver_port", this);
-
+    super.build_phase(phase);
     if (!uvm_config_db#(virtual base_if)::get(this, "", "m_vif", m_vif))
       `uvm_fatal(get_type_name(), $sformatf("Could not get %p from factory", m_vif))
 
