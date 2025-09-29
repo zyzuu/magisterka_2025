@@ -23,11 +23,11 @@ class master_agent extends uvm_agent;
 
   function bit is_ral_agent(string agent_name);
     string ral_from_name = agent_name.substr(agent_name.len()-3, agent_name.len()-1);
-    return ral_from_name == "ral" ? 1 : 0;;
+    return ral_from_name == "ral" ? 1 : 0;
   endfunction : is_ral_agent
 
   function void build_phase(uvm_phase phase);
-    if (!uvm_config_db#(virtual base_if)::get(this, "", $sformatf("m_vif_%s", if_number), m_vif))
+    if (!uvm_config_db#(virtual base_if)::get(null,"*", $sformatf("m_vif_%s", if_number), m_vif))
       `uvm_fatal(get_type_name(), $sformatf("Could not get m_vif_%s from factory", if_number))
 
     uvm_config_db#(virtual base_if)::set(this, "m_monitor_h", "m_vif", m_vif);

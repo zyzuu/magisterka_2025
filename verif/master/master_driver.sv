@@ -24,8 +24,8 @@ class master_driver extends uvm_driver#(base_transaction);
     if (!uvm_config_db#(virtual base_if)::get(this, "", "m_vif", m_vif))
       `uvm_fatal(get_type_name(), $sformatf("Could not get %p from factory", m_vif))
 
-    uvm_config_db#(bit)::get(this,"","insert_wait_state", insert_wait_state);
-    uvm_config_db#(int)::get(this,"","wait_state_duration", wait_state_duration);
+    uvm_config_db#(bit)::get(null,"*","insert_wait_state", insert_wait_state);
+    uvm_config_db#(int)::get(null,"*","wait_state_duration", wait_state_duration);
   endfunction : build_phase
 
   task run_phase(uvm_phase phase);
