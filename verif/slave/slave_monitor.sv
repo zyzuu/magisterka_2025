@@ -19,8 +19,8 @@ class slave_monitor extends uvm_monitor;
   endfunction : build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction = new();
     forever begin
+      base_transaction m_base_transaction = new();
       wait(s_vif.cyc && s_vif.stb);
       m_base_transaction.addr = s_vif.addr;
       m_base_transaction.sel = s_vif.sel;

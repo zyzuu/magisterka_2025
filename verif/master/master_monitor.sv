@@ -17,8 +17,8 @@ class master_monitor extends uvm_monitor;
   endfunction : build_phase
 
   task run_phase(uvm_phase phase);
-    base_transaction m_base_transaction = new();
     forever begin
+      base_transaction m_base_transaction = new();
       wait(m_vif.cyc && m_vif.stb);
       wait (m_vif.ack == 1);
       m_base_transaction.data_out = m_vif.we ? m_vif.data_out : 0;
