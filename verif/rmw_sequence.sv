@@ -6,7 +6,7 @@ class rmw_sequence extends base_sequence;
   endfunction: new
 
   virtual task body();
-    logic [DW-1:0] test_data = 'hDEAD_BEEF;
+    uvm_objection objection = new("objection");
     m_req = base_transaction::type_id::create("m_req");
     m_rsp = base_transaction::type_id::create("m_rsp");
       m_req.randomize() with {
@@ -16,6 +16,7 @@ class rmw_sequence extends base_sequence;
         cycle_type == RMW;
         we == READ;
       };
+    objection.raise_objection(this);
     start_item(m_req);
     finish_item(m_req);
     get_response(m_rsp);
@@ -24,5 +25,6 @@ class rmw_sequence extends base_sequence;
     m_req.addr = destination_address;
     start_item(m_req);
     finish_item(m_req);
+    objection.drop_objection(this);
   endtask: body
 endclass: rmw_sequence

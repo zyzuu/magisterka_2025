@@ -22,6 +22,7 @@ class base_sequence extends uvm_sequence #(base_transaction);
   endfunction: new
 
   virtual task body();
+    uvm_objection objection = new("objection");
     m_req = base_transaction::type_id::create("m_req");
     m_req.randomize() with {
       mode == MASTER_MODE;
@@ -31,10 +32,12 @@ class base_sequence extends uvm_sequence #(base_transaction);
       data_out == r_data_out;
       we == s_we;
     };
+    objection.raise_objection(this);
     start_item(m_req);
     `uvm_info(get_type_name(), "After start_item call!", UVM_DEBUG);
     finish_item(m_req);
     `uvm_info(get_type_name(), "After finish_item call!", UVM_DEBUG);
+    objection.drop_objection(this);
   endtask: body
 
 endclass: base_sequence

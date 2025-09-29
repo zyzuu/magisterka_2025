@@ -20,6 +20,7 @@ class base_vseq extends uvm_sequence #(base_transaction);
   virtual task body();
     uvm_status_e status;
     int rdata [16];
+    uvm_objection objection = new("objection");
 
     base_sequence m_base_seq_0 = base_sequence::type_id::create("m_base_seq_0");
     base_sequence m_base_seq_1 = base_sequence::type_id::create("m_base_seq_1");
@@ -64,6 +65,7 @@ class base_vseq extends uvm_sequence #(base_transaction);
     rmw_sequence m_rmw_seq_14 = rmw_sequence::type_id::create("m_rmw_seq_14");
     rmw_sequence m_rmw_seq_15 = rmw_sequence::type_id::create("m_rmw_seq_15");
 
+    objection.raise_objection(this);
 
     if(!uvm_config_db #(master_sequencer)::get(null, "Sequencers", "agent_00_sqr", m_sequencer_00)) begin
       `uvm_error(get_type_name(), "agent_00_sqr of type a_sequencer not found in the uvm_config_db")
@@ -356,6 +358,7 @@ class base_vseq extends uvm_sequence #(base_transaction);
     m_rmw_seq_14.start(m_sequencer_00);
     m_rmw_seq_15.start(m_sequencer_00);
 
+    objection.drop_objection(this);
   endtask: body
 
 endclass: base_vseq

@@ -6,6 +6,7 @@ class block_sequence extends base_sequence;
   endfunction: new
 
   virtual task body();
+    uvm_objection objection = new("objection");
     m_req = base_transaction::type_id::create("m_req");
     m_rsp = base_transaction::type_id::create("m_rsp");
       m_req.randomize() with {
@@ -14,6 +15,7 @@ class block_sequence extends base_sequence;
         addr == destination_address;
         cycle_type == BLOCK;
       };
+    objection.raise_objection(this);
     for (int i=0; i<number_of_transactions; ++i) begin
     start_item(m_req);
       m_req.addr += 'hf;
@@ -21,5 +23,6 @@ class block_sequence extends base_sequence;
     finish_item(m_req);
     get_response(m_rsp);
     end
+    objection.drop_objection(this);
   endtask: body
 endclass: block_sequence
