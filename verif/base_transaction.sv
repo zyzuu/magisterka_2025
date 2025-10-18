@@ -46,6 +46,9 @@ class base_transaction extends uvm_sequence_item;
     addr[31:28] == 4'hF -> addr[27:24] != 4'hF;
     sel == 'd1;
   }
+  constraint c__cycle_type_addr {
+    cycle_type == BLOCK -> addr[31:24] != 'hFF;
+  }
 
   function new(string name = "base_transaction");
     super.new(name);

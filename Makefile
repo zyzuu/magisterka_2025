@@ -5,13 +5,14 @@ QUESTA_HOME = /eda/siemens/questasim_2023.4/questasim
 VCS_HOME = /eda/synopsys/2023-24/RHELx86/VCS_2023.12/etc/
 VERIF_SRCS_MASTER_HOME = $(VERIF_DIR)/master
 VERIF_SRCS_SLAVE_HOME = $(VERIF_DIR)/slave
+VERIF_SRCS_RAL_HOME = $(VERIF_DIR)/ral
 VERIF_SRCS :=
 VERIF_SRCS += $(VERIF_DIR)/share_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/base_if.sv
 VERIF_SRCS += $(VERIF_DIR)/seq_pkg.sv
+VERIF_SRCS += $(VERIF_DIR)/ral/ral_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/master/master_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/slave/slave_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/ral/ral_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/env_pkg.sv
 VERIF_SRCS += $(VERIF_DIR)/top.sv
 #VERIF_SRCS += $(VERIF_DIR)/base_env.sv
@@ -23,12 +24,17 @@ CADENCE_ENV := . /eda/cadence/scripts/cadence-digital_2023.sh
 XILINX_ENV := . /eda/utils/set-xilinx-env.sh
 SYNOPSYS_ENV := . /eda/synopsys/scripts/add-synopsys-FEV-23-all
 
+GUI_VCS =
+
+TEST ?= base_test
+
 ifneq ($(GUI),1)
 GUI_P = -c
+GUI_VCS = -gui
 endif
 
 ifeq ($(DEBUG),1)
-DEBUG_CMD = +UVM_VERBOSITY=UVM_DEBUG
+DEBUG_CMD = +UVM_VERBOSITY=UVM_DEBUG +UVM_CONFIG_DB_TRACE +UVM_PHASE_TRACE
 endif
 
 #GUI_X = --gui --tclbatch xsim.tcl
@@ -44,7 +50,7 @@ elab_questa:
 
 run_questa:
 	$(SIEMENS_ENV)  && \
-	taskset -c 0-11 vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -autoprofile -logfile sim_$(SEED).log -classdebug  -stats=perf -lineinfo -verboseprofile -do sim.do -uvmcontrol=all $(DEBUG_CMD)
+	taskset -c 0-11 vsim $(GUI_P) top_opt -L $(QUESTA_HOME)/uvm-1.2 -autoprofile -logfile sim_$(SEED).log -classdebug  -stats=perf -lineinfo -verboseprofile -do sim.do -uvmcontrol=all $(DEBUG_CMD) +UVM_TESTNAME=$(TEST)
 #-do "run -all;"
 #-sv_seed $(SEED)
 #vsim -c top_opt +UVM_CONFIG_DB_TRACE -L $(QUESTA_HOME)/uvm-1.2 -do "sim.do"
@@ -66,7 +72,7 @@ run_aldec:
 
 comp_vcs:
 	$(SYNOPSYS_ENV) && \
-	vcs -sverilog -ntb_opts uvm-1.2  -timescale=1ns/1ns -Xkeyopt=rtopt -Xkeyopt=mvu +rad +incdir+$(VCS_HOME)/uvm-1.2 +incdir+$(DESIGN_DIR_) +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) $(DESIGN_DIR) $(VERIF_SRCS)
+	vcs -kdb -debug_access+all -sverilog -ntb_opts uvm-1.2  -timescale=1ns/1ns -Xkeyopt=rtopt -Xkeyopt=mvu +rad +incdir+$(VCS_HOME)/uvm-1.2 +incdir+$(DESIGN_DIR_) +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) +incdir+$(VERIF_SRCS_RAL_HOME) $(DESIGN_DIR) $(VERIF_SRCS) -cg_coverage_control=1
 
 #comp_vcs:
 #	$(SYNOPSYS_ENV) && \
@@ -74,8 +80,8 @@ comp_vcs:
 
 run_vcs:
 	#$(SYNOPSYS_ENV) && \
-	./simv +ntb_random_seed $(SEED) -l vcs_$(SEED).log -reportstats
-
+	./simv +ntb_random_seed $(SEED) $(GUI_VCS) -l vcs_$(SEED).log -reportstats +UVM_TESTNAME=$(TEST) -cg_coverage_control=1
+# \+UVM_PHASE_RECORD $(GUI_VCS) +ntb_solver_debug=verbose +ntb_solver_debug=trace +ntb_solver_debug_filter=all +UVM_VERBOSITY=UVM_DEBUG
 comp_master_files:
 	vlog -incr +incdir+$(VERIF_DIR) $(VERIF_SRCS_MASTER_HOME)/master_pkg.sv -L $(QUESTA_HOME)/uvm-1.2
 

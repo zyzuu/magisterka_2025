@@ -9,8 +9,40 @@ class base_scoreboard extends uvm_scoreboard;
     base_transaction items_from_monitor [$];
     base_transaction items_from_driver [$];
 
+    covergroup cg_transaction with function sample (base_transaction transaction_item);
+      coverpoint transaction_item.addr {
+        bins zero = {0};
+        bins other = {[1:1000]};
+      }
+      coverpoint transaction_item.stb {
+        bins zero = {0};
+        bins one = {1};
+      }
+      coverpoint transaction_item.cyc {
+        bins zero = {0};
+        bins one = {1};
+      }
+      coverpoint transaction_item.data_out {
+        bins zero = {0};
+        bins other = {[1:1000]};
+      }
+      coverpoint transaction_item.data_in {
+        bins zero = {0};
+        bins other = {[1:1000]};
+      }
+      coverpoint transaction_item.we {
+        bins zero = {0};
+        bins one = {1};
+      }
+      coverpoint transaction_item.ack {
+        bins zero = {0};
+        bins one = {1};
+      }
+    endgroup : cg_transaction
+
     function new (string name = "base_scoreboard", uvm_component parent = null);
       super.new (name, parent);
+      cg_transaction = new();
     endfunction : new
 
     function void build_phase (uvm_phase phase);
@@ -26,6 +58,7 @@ class base_scoreboard extends uvm_scoreboard;
 
       temp_transaction.copy(monitored_data);
       items_from_monitor.push_front(temp_transaction);
+      cg_transaction.sample(temp_transaction);
     endfunction : write_monitor
 
     virtual function void write_driver (base_transaction drived_data);
@@ -39,8 +72,15 @@ class base_scoreboard extends uvm_scoreboard;
     endfunction : write_driver
 
     function void check_phase(uvm_phase phase);
-      if (items_from_driver.size() != items_from_monitor.size())
+      if (items_from_driver.size() != items_from_monitor.size()) begin
         `uvm_error(get_type_name(), $sformatf("Number of elements drove do not equal number of elements monitored, items_from_driver.size() = %d, items_from_monitor.size() = %d", items_from_driver.size(), items_from_monitor.size()))
+        if (uvm_top.get_report_verbosity_level() == UVM_DEBUG) begin
+          foreach (items_from_driver[i])
+            items_from_driver[i].print();
+          foreach (items_from_monitor[i])
+            items_from_monitor[i].print();
+        end
+      end
       else
         foreach (items_from_driver[i]) begin
           if(items_from_driver[i].addr != items_from_monitor[i].addr)

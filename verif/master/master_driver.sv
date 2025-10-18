@@ -83,6 +83,7 @@ class master_driver extends uvm_driver#(base_transaction);
         m_vif.cyc = 0;
         transaction_counter = 0;
       end
+      m_vif.data_out = 0;
       driver_port.write(m_base_transaction);
       @(posedge m_vif.clk_i);
   endtask : drive_data

@@ -31,6 +31,7 @@ class base_env extends uvm_env;
 
   // Scoreboard
   base_scoreboard m_base_scoreboard;
+  arbiter_scoreboard m_arbiter_scoreboard;
 
   // RAL
   uvm_reg_predictor#(base_transaction) m_reg_predictor;
@@ -68,18 +69,20 @@ class base_env extends uvm_env;
     s_agent_15 = slave_agent::type_id::create("s_agent_15", this);
 
     m_base_scoreboard = base_scoreboard::type_id::create("m_base_scoreboard", this);
+    m_arbiter_scoreboard = arbiter_scoreboard::type_id::create("m_arbiter_scoreboard", this);
+
     m_reg_predictor = uvm_reg_predictor#(base_transaction)::type_id::create("m_reg_predictor", this);
   endfunction: build_phase
 
   function void connect_phase(uvm_phase phase);
-    m_agent_00.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_01.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_02.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_03.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_04.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_05.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_06.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
-    m_agent_07.m_driver_h.driver_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_00.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_01.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_02.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_03.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_04.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_05.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_06.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
+    m_agent_07.m_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_driver);
 
     s_agent_00.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
     s_agent_01.s_monitor_h.monitor_port.connect(m_base_scoreboard.ap_imp_monitor);
@@ -100,5 +103,7 @@ class base_env extends uvm_env;
 
     m_reg_predictor.adapter = m_agent_ral.m_reg_adapter_h;
     m_agent_ral.m_monitor_h.monitor_port.connect (m_reg_predictor.bus_in);
+    if (uvm_top.find("uvm_test_top").get_type_name() == "arbiter_test")
+      s_agent_00.s_monitor_h.monitor_port.connect(m_arbiter_scoreboard.ap_imp_arbiter_monitor);
   endfunction : connect_phase
 endclass

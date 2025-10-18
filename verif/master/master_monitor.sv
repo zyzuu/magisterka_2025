@@ -20,19 +20,25 @@ class master_monitor extends uvm_monitor;
     base_transaction m_base_transaction = new();
     forever begin
       wait(m_vif.cyc && m_vif.stb);
-      wait (m_vif.ack == 1);
-      m_base_transaction.data_out = m_vif.we ? m_vif.data_out : 0;
-      m_base_transaction.addr = m_vif.addr;
       m_base_transaction.sel = m_vif.sel;
       m_base_transaction.we = m_vif.we;
-      m_base_transaction.operation = operation_t'(m_vif.we);
       m_base_transaction.cyc = m_vif.cyc;
       m_base_transaction.stb = m_vif.stb;
+      wait (m_vif.ack == 1);
+      @(posedge m_vif.clk_i);
+      m_base_transaction.addr = m_vif.addr;
+      m_base_transaction.operation = operation_t'(m_vif.we);
+      m_base_transaction.data_out = m_vif.we ? m_vif.data_out : 0;
+      m_base_transaction.data_in = !m_vif.we ? m_vif.data_in : 0;
       m_base_transaction.ack = m_vif.ack;
       m_base_transaction.err = m_vif.err;
       m_base_transaction.rty = m_vif.rty;
+
+      if (m_base_transaction.addr[31:24] != 'hFF)
+        monitor_port.write(m_base_transaction);
+
+      wait(~m_vif.cyc || ~m_vif.stb || ~m_vif.ack);
       @(posedge m_vif.clk_i);
-      monitor_port.write(m_base_transaction);
     end
   endtask : run_phase
 

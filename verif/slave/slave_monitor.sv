@@ -22,20 +22,23 @@ class slave_monitor extends uvm_monitor;
     base_transaction m_base_transaction = new();
     forever begin
       wait(s_vif.cyc && s_vif.stb);
-      m_base_transaction.addr = s_vif.addr;
+      wait(s_vif.ack);
       m_base_transaction.sel = s_vif.sel;
       m_base_transaction.we = s_vif.we;
       m_base_transaction.cyc = s_vif.cyc;
       m_base_transaction.stb = s_vif.stb;
-      wait(s_vif.ack);
       @(posedge s_vif.clk_i);
+      m_base_transaction.addr = s_vif.addr;
       m_base_transaction.operation = operation_t'(s_vif.we);
       m_base_transaction.data_out = s_vif.we ? s_vif.data_out : 0;
       m_base_transaction.data_in = !s_vif.we ? s_vif.data_in : 0;
       m_base_transaction.ack = s_vif.ack;
       m_base_transaction.err = s_vif.err;
       m_base_transaction.rty = s_vif.rty;
-      monitor_port.write(m_base_transaction);
+
+      if (m_base_transaction.addr[31:24] != 'hFF && (m_base_transaction.cyc && m_base_transaction.stb)/*VCS interprets regmodel operations in a strange way*/)
+        monitor_port.write(m_base_transaction);
+
       wait(~s_vif.cyc || ~s_vif.stb || ~s_vif.ack);
       @(posedge s_vif.clk_i);
     end

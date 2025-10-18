@@ -71,6 +71,7 @@ class slave_driver extends uvm_driver#(base_transaction);
     @(posedge s_vif.clk_i);
 
     s_vif.ack = 0;
+    s_vif.data_in = 0;
     @(posedge s_vif.clk_i);
   endtask : drive_data
 endclass : slave_driver

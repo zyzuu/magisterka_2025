@@ -9,8 +9,10 @@ package env_pkg;
   import ral_pkg::*;
 
   `include "base_scoreboard.sv"
+  `include "arbiter_scoreboard.sv"
   `include "base_env.sv"
   `include "base_vseq.sv"
   `include "base_test.sv"
+  `include "arbiter_test.sv"
 
 endpackage : env_pkg
