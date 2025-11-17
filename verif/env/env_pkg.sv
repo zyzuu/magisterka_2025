@@ -7,12 +7,14 @@ package env_pkg;
   import seq_pkg::*;
   import share_pkg::*;
   import ral_pkg::*;
+  //import tests_pkg::*;
 
   `include "base_scoreboard.sv"
   `include "arbiter_scoreboard.sv"
   `include "base_env.sv"
   `include "base_vseq.sv"
-  `include "base_test.sv"
-  `include "arbiter_test.sv"
+  //`include "base_test.sv"
+  //`include "arbiter_test.sv"
+  //`include "top.sv"
 
 endpackage : env_pkg

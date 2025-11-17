@@ -6,16 +6,21 @@ VCS_HOME = /eda/synopsys/2023-24/RHELx86/VCS_2023.12/etc/
 VERIF_SRCS_MASTER_HOME = $(VERIF_DIR)/master
 VERIF_SRCS_SLAVE_HOME = $(VERIF_DIR)/slave
 VERIF_SRCS_RAL_HOME = $(VERIF_DIR)/ral
+VERIF_SRCS_TESTS_HOME = $(VERIF_DIR)/tests
+VERIF_SRCS_SEQ_HOME = $(VERIF_DIR)/sequences
+VERIF_SRCS_SHARE_HOME = $(VERIF_DIR)/share
+VERIF_SRCS_TOP_HOME = $(VERIF_DIR)/top
+VERIF_SRCS_ENV_HOME = $(VERIF_DIR)/env
 VERIF_SRCS :=
-VERIF_SRCS += $(VERIF_DIR)/share_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/base_if.sv
-VERIF_SRCS += $(VERIF_DIR)/seq_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/ral/ral_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/master/master_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/slave/slave_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/env_pkg.sv
-VERIF_SRCS += $(VERIF_DIR)/top.sv
-#VERIF_SRCS += $(VERIF_DIR)/base_env.sv
+VERIF_SRCS += $(VERIF_SRCS_SHARE_HOME)/base_if.sv
+VERIF_SRCS += $(VERIF_SRCS_SHARE_HOME)/share_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_SEQ_HOME)/seq_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_RAL_HOME)/ral_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_MASTER_HOME)/master_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_SLAVE_HOME)/slave_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_ENV_HOME)/env_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_TESTS_HOME)/tests_pkg.sv
+VERIF_SRCS += $(VERIF_SRCS_TOP_HOME)/top.sv
 SEED := 1
 
 ALDEC_ENV := . /eda/aldec/Riviera-PRO-2024.10/etc/setenv
@@ -72,7 +77,7 @@ run_aldec:
 
 comp_vcs:
 	$(SYNOPSYS_ENV) && \
-	vcs -kdb -debug_access+all -sverilog -ntb_opts uvm-1.2  -timescale=1ns/1ns -Xkeyopt=rtopt -Xkeyopt=mvu +rad +incdir+$(VCS_HOME)/uvm-1.2 +incdir+$(DESIGN_DIR_) +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) +incdir+$(VERIF_SRCS_RAL_HOME) $(DESIGN_DIR) $(VERIF_SRCS) -cg_coverage_control=1
+	vcs -kdb -debug_access+all -sverilog -ntb_opts uvm-1.2  -timescale=1ns/1ns -Xkeyopt=rtopt -Xkeyopt=mvu +rad +incdir+$(VCS_HOME)/uvm-1.2 +incdir+$(VERIF_SRCS_SHARE_HOME) +incdir+$(VERIF_SRCS_TESTS_HOME) +incdir+$(VERIF_SRCS_SEQ_HOME) +incdir+$(VERIF_SRCS_ENV_HOME) +incdir+$(DESIGN_DIR_) +incdir+$(VERIF_DIR) +incdir+$(VERIF_SRCS_SLAVE_HOME) +incdir+$(VERIF_SRCS_MASTER_HOME) +incdir+$(VERIF_SRCS_RAL_HOME) $(DESIGN_DIR) $(VERIF_SRCS) -cg_coverage_control=1
 
 #comp_vcs:
 #	$(SYNOPSYS_ENV) && \
